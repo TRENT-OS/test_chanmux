@@ -1,0 +1,24 @@
+import "../../interfaces/ChanMuxInf.camkes";
+import "../../interfaces/UartInf.camkes";
+
+component ChanMux {
+
+    emits     DataAvailableEvent  dataAvailableMain;
+    provides  ChanMuxInInf        ChanMuxIn;
+    //-------------------------------------------------
+    // interface to ChanMux_Tester1
+    dataport  Buf                 chanmux_Tester1DataPort;
+    //-------------------------------------------------
+    // interface to ChanMux_Tester2
+    dataport  Buf                 chanmux_Tester2DataPort;
+
+    //-------------------------------------------------
+    // MUX Uart interface
+    dataport  Buf                 outputDataPort;
+    uses      UartInf             Output;
+    provides  ChanMuxOutInf       ChanMuxOut;
+
+    //-------------------------------------------------
+    // Synchronization Primitives
+    has mutex Mutex;
+}
