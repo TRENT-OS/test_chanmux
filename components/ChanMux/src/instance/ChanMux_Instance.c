@@ -10,8 +10,8 @@
 #include "assert.h"
 #include <camkes.h>
 
-static uint8_t chanmux_Tester1FifoBuf[PAGE_SIZE];
-static uint8_t chanmux_Tester2FifoBuf[PAGE_SIZE];
+static uint8_t chanmux_Tester1FifoBuf[PAGE_SIZE / 2];
+static uint8_t chanmux_Tester2FifoBuf[PAGE_SIZE / 2];
 
 static const ChanMuxConfig_t cfgChanMux =
 {
@@ -53,8 +53,8 @@ static const ChanMuxConfig_t cfgChanMux =
         },
         {
             // Channel 6
-            .buffer = chanmux_Tester1FifoBuf,
-            .len = sizeof(chanmux_Tester1FifoBuf)
+            .buffer = NULL,
+            .len = 0
         },
         {
             // Channel 7
@@ -68,6 +68,16 @@ static const ChanMuxConfig_t cfgChanMux =
         },
         {
             // Channel 9
+            .buffer = NULL,
+            .len = 0
+        },
+        {
+            // Channel 10
+            .buffer = chanmux_Tester1FifoBuf,
+            .len = sizeof(chanmux_Tester1FifoBuf)
+        },
+        {
+            // Channel 11
             .buffer = chanmux_Tester2FifoBuf,
             .len = sizeof(chanmux_Tester2FifoBuf)
         }
@@ -76,43 +86,51 @@ static const ChanMuxConfig_t cfgChanMux =
 
 const ChannelDataport_t dataports[] =
 {
-    {
+    { // 0
         .io  = NULL,
         .len = 0
     },
-    {
+    { // 1
         .io  = NULL,
         .len = 0
     },
-    {
+    { // 2
         .io  = NULL,
         .len = 0
     },
-    {
+    { // 3
         .io  = NULL,
         .len = 0
     },
-    {
+    { // 4
         .io  = NULL,
         .len = 0
     },
-    {
+    { // 5
         .io  = NULL,
         .len = 0
     },
-    {
+    { // 6
+        .io  = NULL,
+        .len = 0
+    },
+    { // 7
+        .io  = NULL,
+        .len = 0
+    },
+    { // 8
+        .io  = NULL,
+        .len = 0
+    },
+    { // 9
+        .io  = NULL,
+        .len = 0
+    },
+    { // 10
         .io  = (void**) &chanmux_Tester1DataPort,
         .len = PAGE_SIZE
     },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
-        .io  = NULL,
-        .len = 0
-    },
-    {
+    { // 11
         .io  = (void**) &chanmux_Tester2DataPort,
         .len = PAGE_SIZE
     }

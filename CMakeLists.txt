@@ -11,6 +11,7 @@ DeclareCAmkESComponent(ChanMux_Tester1
 		components/ChanMux/src/instance
     SOURCES
         src/ChanMux_Tester1.c
+        src/ChanMux_Tester_Common.c
     C_FLAGS
         -Wall -Werror
     LIBS
@@ -22,6 +23,7 @@ DeclareCAmkESComponent(ChanMux_Tester2
         components/ChanMux/src/instance
     SOURCES
         src/ChanMux_Tester2.c
+        src/ChanMux_Tester_Common.c
     C_FLAGS
         -Wall -Werror
     LIBS
