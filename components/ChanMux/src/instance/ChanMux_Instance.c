@@ -10,8 +10,8 @@
 #include "assert.h"
 #include <camkes.h>
 
-static uint8_t chanmux_Tester1FifoBuf[PAGE_SIZE / 2];
-static uint8_t chanmux_Tester2FifoBuf[PAGE_SIZE / 2];
+static uint8_t chanmux_Tester1FifoBuf[CHANMUX_FIFO_SIZE];
+static uint8_t chanmux_Tester2FifoBuf[CHANMUX_FIFO_SIZE];
 
 static const ChanMuxConfig_t cfgChanMux =
 {

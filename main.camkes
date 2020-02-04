@@ -15,6 +15,9 @@ assembly {
 
         connection  seL4RPCCall         tester1_chanmux     (from tester1.ChanMuxRpc, to chanMux.ChanMuxIn);
         connection  seL4RPCCall         tester2_chanmux     (from tester2.ChanMuxRpc, to chanMux.ChanMuxIn);
+        connection  seL4RPCCall         tester1_txstream    (from tester1.ChanMuxTest2, to tester2.ChanMuxTest);
+        connection  seL4RPCCall         tester2_txstream    (from tester2.ChanMuxTest1, to tester1.ChanMuxTest);
+
         connection  seL4RPCCall         chanmux_uart        (from chanMux.Output, to uartDrv.UartDrv);
         connection  seL4RPCCall         uart_chanmux        (from uartDrv.Output, to chanMux.ChanMuxOut);
 

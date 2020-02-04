@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+#define CHANMUX_FIFO_SIZE   (PAGE_SIZE / 2)
 enum
 {
     CHANNEL_LAN_DATA,        // 0

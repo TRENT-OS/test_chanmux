@@ -1,4 +1,5 @@
 import "../../interfaces/ChanMuxInf.camkes";
+import "../../interfaces/ChanMuxTestInf.camkes";
 
 component ChanMux_Tester2 {
     control;
@@ -6,6 +7,7 @@ component ChanMux_Tester2 {
     dataport    Buf                 chanMuxDataPort;
 
     uses        ChanMuxInInf        ChanMuxRpc;
+    provides    ChanMuxTestInf      ChanMuxTest;
+    uses        ChanMuxTestInf      ChanMuxTest1;
     consumes    DataAvailableEvent  ChanMuxSignal_dataAvailable;
 }
-
