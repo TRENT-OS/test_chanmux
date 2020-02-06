@@ -17,6 +17,11 @@ int
 ChanMuxTest_init(unsigned int chan, char* proxyBuffer);
 
 /**
+*@brief Performs tests on parameters and return codes
+*/
+int ChanMuxTest_testReturnCodes(int tester);
+
+/**
 *@brief Performs test on overflow condition of ChanMux. A command is sent to the
  * proxy in order to trigger the big shot and then the overflow condition gets
  * tested.

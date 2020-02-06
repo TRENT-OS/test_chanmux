@@ -37,10 +37,84 @@ int ChanMuxTest_init(unsigned int chan)
                                         chanMuxDataPort);
     if (!isSuccess)
     {
-        Debug_LOG_ERROR("Failed to construct testChanMuxClient!\n");
+        Debug_LOG_ERROR("Failed to construct testChanMuxClient!");
         return -1;
     }
     return 0;
+}
+
+int ChanMuxTest_testReturnCodes(int tester)
+{
+    int retval = -1;
+    size_t len = sizeof(dataBuf);
+    // TEST ChanMuxClient_write()
+    if (ChanMuxClient_write(&testChanMuxClient, NULL, len, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, len, NULL)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_readAsync(&testChanMuxClient, NULL, len, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, len, NULL)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_read(&testChanMuxClient, NULL, len, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, len, NULL)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    // test buffer overlap
+    else if (ChanMuxClient_read(&testChanMuxClient, testChanMuxClient.dataport, PAGE_SIZE + 1, &len)
+            != SEOS_ERROR_INVALID_PARAMETER)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
+                        __func__, tester, __FILE__, __LINE__);
+    }
+    else
+    {
+        Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+        retval = 0;
+    }
+    return retval;
 }
 
 int ChanMuxTest_testOverflow(int tester)

@@ -21,6 +21,7 @@ int run()
         return -1;
     }
 
+    ChanMuxTest_testReturnCodes(2);
     ChanMuxTest_testOverflow(2);
 
     if (fullDuplexTestTxRunning)

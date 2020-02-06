@@ -20,7 +20,7 @@ int run()
                         __func__, CHANNEL_TEST_1, ret_value);
         return -1;
     }
-
+    ChanMuxTest_testReturnCodes(1);
     ChanMuxTest_testOverflow(1);
 
     if (fullDuplexTestTxRunning)
