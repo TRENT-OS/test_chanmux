@@ -160,7 +160,7 @@ ChanMuxTest_testOverflow(int tester)
                              dataBuf,
                              len,
                              &len);
-    if (SEOS_ERROR_OVERFLOW_DETECTED == err && CHANMUX_FIFO_SIZE == len)
+    if ((SEOS_ERROR_OVERFLOW_DETECTED == err) && (CHANMUX_FIFO_SIZE == len))
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
         retval = SEOS_SUCCESS;
@@ -244,7 +244,7 @@ ChanMuxTest_testFullDuplex(int tester)
     size_t len          = 0;
     size_t amount       = 0;
 
-    while (amount < ITERATIONS * FULL_DUPLEX_BLOCK_SIZE)
+    while (amount < (ITERATIONS * FULL_DUPLEX_BLOCK_SIZE))
     {
         Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
                         __func__, tester, len);
