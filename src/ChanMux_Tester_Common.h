@@ -7,26 +7,29 @@
 #pragma once
 
 #include <stddef.h>
+#include "SeosError.h"
 
 /* Exported functions ------------------------------------------------------- */
 
 /**
 *@brief Initializes the ChanMuxClient and the ChanMuxTest and maps the passed channel to the defined dataport.
 */
-int
+seos_err_t
 ChanMuxTest_init(unsigned int chan, char* proxyBuffer);
 
 /**
 *@brief Performs tests on parameters and return codes
 */
-int ChanMuxTest_testReturnCodes(int tester);
+seos_err_t
+ChanMuxTest_testReturnCodes(int tester);
 
 /**
 *@brief Performs test on overflow condition of ChanMux. A command is sent to the
  * proxy in order to trigger the big shot and then the overflow condition gets
  * tested.
 */
-int ChanMuxTest_testOverflow(int tester);
+seos_err_t
+ChanMuxTest_testOverflow(int tester);
 
 /**
 *@brief This fuction will stream data to the Proxy that will, in turn, echo
@@ -37,7 +40,8 @@ int ChanMuxTest_testOverflow(int tester);
  * transmission.
  *
 */
-int ChanMuxTest_testFullDuplexTxStream(int tester);
+seos_err_t
+ChanMuxTest_testFullDuplexTxStream(int tester);
 
 /**
 *@brief Performs test of full duplex streaming on ChanMux. This function is
@@ -46,4 +50,5 @@ int ChanMuxTest_testFullDuplexTxStream(int tester);
  * while it is still sending the data.
  *
 */
-int ChanMuxTest_testFullDuplex(int tester);
+seos_err_t
+ChanMuxTest_testFullDuplex(int tester);

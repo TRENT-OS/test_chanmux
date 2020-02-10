@@ -3,7 +3,10 @@
 #include "camkes.h"
 #include "ChanMux_config.h"
 #include "ChanMux_Tester_Common.h"
+#include "SeosError.h"
+
 #include "camkes.h"
+
 
 static char proxyBuffer[PAGE_SIZE];
 
@@ -12,14 +15,15 @@ extern bool fullDuplexTestRxRunning;
 
 int run()
 {
-    int ret_value = ChanMuxTest_init(CHANNEL_TEST_1, proxyBuffer);
+    seos_err_t retval = ChanMuxTest_init(CHANNEL_TEST_1, proxyBuffer);
 
-    if (ret_value < 0)
+    if (retval != SEOS_SUCCESS)
     {
         Debug_LOG_ERROR("%s(): channel %u: Error initializing ChanMuxTest! Errno:%d",
-                        __func__, CHANNEL_TEST_1, ret_value);
-        return -1;
+                        __func__, CHANNEL_TEST_1, retval);
+        return retval;
     }
+
     ChanMuxTest_testReturnCodes(1);
     ChanMuxTest_testOverflow(1);
 

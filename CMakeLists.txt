@@ -16,6 +16,7 @@ DeclareCAmkESComponent(ChanMux_Tester1
         -Wall -Werror
     LIBS
         seos_libs
+        seos_core_api
 )
 
 DeclareCAmkESComponent(ChanMux_Tester2
@@ -28,6 +29,7 @@ DeclareCAmkESComponent(ChanMux_Tester2
         -Wall -Werror
     LIBS
         seos_libs
+        seos_core_api
 )
 
 DeclareCAmkESComponent(UartDrv
@@ -45,6 +47,7 @@ DeclareCAmkESComponent(ChanMux
         -Wall -Werror
     LIBS
         seos_libs
+        seos_core_api
 )
 
 #ROOT SERVER

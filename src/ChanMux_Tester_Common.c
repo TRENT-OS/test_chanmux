@@ -29,7 +29,8 @@ cpyIntToBuf(uint32_t integer, char* buf)
     buf[3] = integer & 0xFF;
 }
 
-int ChanMuxTest_init(unsigned int chan)
+seos_err_t
+ChanMuxTest_init(unsigned int chan)
 {
 
     bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient,
@@ -43,9 +44,10 @@ int ChanMuxTest_init(unsigned int chan)
     return 0;
 }
 
-int ChanMuxTest_testReturnCodes(int tester)
+seos_err_t
+ChanMuxTest_testReturnCodes(int tester)
 {
-    int retval = -1;
+    seos_err_t retval = SEOS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
     // TEST ChanMuxClient_write()
     if (ChanMuxClient_write(&testChanMuxClient, NULL, len, &len)
@@ -60,7 +62,10 @@ int ChanMuxTest_testReturnCodes(int tester)
         Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
                         __func__, tester, __FILE__, __LINE__);
     }
-    else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
+    else if (ChanMuxClient_write(&testChanMuxClient,
+                                 dataBuf,
+                                 PAGE_SIZE + 1,
+                                 &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
@@ -78,7 +83,9 @@ int ChanMuxTest_testReturnCodes(int tester)
         Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
                         __func__, tester, __FILE__, __LINE__);
     }
-    else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
+    else if (ChanMuxClient_readAsync(&testChanMuxClient,
+                                     dataBuf, PAGE_SIZE + 1,
+                                     &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
@@ -103,7 +110,10 @@ int ChanMuxTest_testReturnCodes(int tester)
                         __func__, tester, __FILE__, __LINE__);
     }
     // test buffer overlap
-    else if (ChanMuxClient_read(&testChanMuxClient, testChanMuxClient.dataport, PAGE_SIZE + 1, &len)
+    else if (ChanMuxClient_read(&testChanMuxClient,
+                                testChanMuxClient.dataport,
+                                PAGE_SIZE + 1,
+                                &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
@@ -112,14 +122,15 @@ int ChanMuxTest_testReturnCodes(int tester)
     else
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
-        retval = 0;
+        retval = SEOS_SUCCESS;
     }
     return retval;
 }
 
-int ChanMuxTest_testOverflow(int tester)
+seos_err_t
+ChanMuxTest_testOverflow(int tester)
 {
-    int retval = -1;
+    seos_err_t retval = SEOS_ERROR_GENERIC;
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
@@ -140,7 +151,7 @@ int ChanMuxTest_testOverflow(int tester)
     if (SEOS_ERROR_OVERFLOW_DETECTED == err && CHANMUX_FIFO_SIZE == len)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
-        retval = 0;
+        retval = SEOS_SUCCESS;
     }
     else
     {
@@ -156,7 +167,8 @@ int ChanMuxTest_testOverflow(int tester)
 // This routine will be shared to the other test thread via an inteface so that
 // we will have a thread (the one running the interface) making Tx streaming
 // while the other is doing Rx streaming
-int ChanMuxTest_testFullDuplexTxStream(int tester)
+seos_err_t
+ChanMuxTest_testFullDuplexTxStream(int tester)
 {
     Debug_LOG_DEBUG("%s: (tester %d) waiting signal to run...", __func__, tester);
     fullDuplexTestTxRunning = true;
@@ -165,7 +177,7 @@ int ChanMuxTest_testFullDuplexTxStream(int tester)
     while (!fullDuplexTestRxRunning) seL4_Yield();
     Debug_LOG_DEBUG("%s: (tester %d) signal received", __func__, tester);
 
-    int retval              = -1;
+    seos_err_t retval       = SEOS_ERROR_GENERIC;
     char testCmd[5]         = { CMD_TEST_FULL_DUPLEX };
     size_t len              = 0;
     seos_err_t err          = SEOS_ERROR_GENERIC;
@@ -197,14 +209,15 @@ int ChanMuxTest_testFullDuplexTxStream(int tester)
         retval = 0;
     }
 exit:
-    if (0 == retval)
+    if (SEOS_SUCCESS == retval)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
     }
     return retval;
 }
 
-int ChanMuxTest_testFullDuplex(int tester)
+seos_err_t
+ChanMuxTest_testFullDuplex(int tester)
 {
     Debug_LOG_DEBUG("%s: (tester %d) waiting signal to run...", __func__, tester);
     fullDuplexTestRxRunning = true;
@@ -213,10 +226,10 @@ int ChanMuxTest_testFullDuplex(int tester)
     while (!fullDuplexTestTxRunning) seL4_Yield();
     Debug_LOG_DEBUG("%s: (tester %d) signal received", __func__, tester);
 
-    int retval      = -1;
-    seos_err_t err  = SEOS_ERROR_GENERIC;
-    size_t len      = 0;
-    size_t amount   = 0;
+    seos_err_t retval   = SEOS_ERROR_GENERIC;
+    seos_err_t err      = SEOS_ERROR_GENERIC;
+    size_t len          = 0;
+    size_t amount       = 0;
 
     while (amount < ITERATIONS * FULL_DUPLEX_BLOCK_SIZE)
     {
@@ -250,7 +263,7 @@ int ChanMuxTest_testFullDuplex(int tester)
                 }
                 if (i == len)
                 {
-                    retval = 0;
+                    retval = SEOS_SUCCESS;
                 }
                 else
                 {
@@ -276,7 +289,7 @@ int ChanMuxTest_testFullDuplex(int tester)
         }
     }
  exit:
-    if (0 == retval)
+    if (SEOS_SUCCESS == retval)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
     }
