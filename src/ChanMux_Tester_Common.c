@@ -49,18 +49,22 @@ ChanMuxTest_testReturnCodes(int tester)
 {
     seos_err_t retval = SEOS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
+
+    /* the following code structure may look strange because od the repetition
+     of Debug_LOG_* calls. The reason why we want this is because the macros,
+     based on where they are places will print out __FILE__ and __LINE__ too */
     // TEST ChanMuxClient_write()
     if (ChanMuxClient_write(&testChanMuxClient, NULL, len, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, len, NULL)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_write(&testChanMuxClient,
                                  dataBuf,
@@ -68,46 +72,46 @@ ChanMuxTest_testReturnCodes(int tester)
                                  &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient, NULL, len, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, len, NULL)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient,
                                      dataBuf, PAGE_SIZE + 1,
                                      &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, NULL, len, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, len, NULL)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     // test buffer overlap
     else if (ChanMuxClient_read(&testChanMuxClient,
@@ -116,8 +120,8 @@ ChanMuxTest_testReturnCodes(int tester)
                                 &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), failed @%s:%d",
-                        __func__, tester, __FILE__, __LINE__);
+        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+                        __func__, tester);
     }
     else
     {
@@ -134,14 +138,22 @@ ChanMuxTest_testOverflow(int tester)
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
-    Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger overflow condition..",
+    Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger overflow condition...",
                     __func__, tester);
     seos_err_t err = ChanMuxClient_write(&testChanMuxClient,
                                          testCmd,
                                          len,
                                          &len);
-
-    Debug_LOG_DEBUG("%s: (tester %d) ..command sent, retrieving data and overflow return code",
+    if (SEOS_SUCCESS != err)
+    {
+        Debug_LOG_ERROR("%s: (tester %d) failed trying to send a command, err was %d with %zu bytes written",
+                        __func__,
+                        tester,
+                        err,
+                        len);
+        goto exit;
+    }
+    Debug_LOG_DEBUG("%s: (tester %d) command sent, retrieving data and overflow return code",
                     __func__, tester);
     len = CHANMUX_FIFO_SIZE + 1; // we will try to read more then possible
     err = ChanMuxClient_read(&testChanMuxClient,
@@ -161,6 +173,7 @@ ChanMuxTest_testOverflow(int tester)
                         err,
                         len);
     }
+exit:
     return retval;
 }
 
@@ -175,7 +188,7 @@ ChanMuxTest_testFullDuplexTxStream(int tester)
     // stay in the busy loop until the other thread begins with running the
     // tx stream
     while (!fullDuplexTestRxRunning) seL4_Yield();
-    Debug_LOG_DEBUG("%s: (tester %d) signal received", __func__, tester);
+    Debug_LOG_DEBUG("%s: (tester %d) signal received!", __func__, tester);
 
     seos_err_t retval       = SEOS_ERROR_GENERIC;
     char testCmd[5]         = { CMD_TEST_FULL_DUPLEX };
@@ -196,7 +209,7 @@ ChanMuxTest_testFullDuplexTxStream(int tester)
 
     for (int i = 0; i < ITERATIONS; i++)
     {
-        Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger full duplex streaming..",
+        Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger full duplex streaming...",
                         __func__, tester);
         len = sizeof(testCmd) + FULL_DUPLEX_BLOCK_SIZE;
         err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &len);
@@ -224,7 +237,7 @@ ChanMuxTest_testFullDuplex(int tester)
     // stay in the busy loop until the other thread begins with running the
     // tx stream
     while (!fullDuplexTestTxRunning) seL4_Yield();
-    Debug_LOG_DEBUG("%s: (tester %d) signal received", __func__, tester);
+    Debug_LOG_DEBUG("%s: (tester %d) signal received!", __func__, tester);
 
     seos_err_t retval   = SEOS_ERROR_GENERIC;
     seos_err_t err      = SEOS_ERROR_GENERIC;
@@ -233,7 +246,7 @@ ChanMuxTest_testFullDuplex(int tester)
 
     while (amount < ITERATIONS * FULL_DUPLEX_BLOCK_SIZE)
     {
-        Debug_LOG_DEBUG("%s: (tester %d) attempt to read %zu bytes from ChanMux..",
+        Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
                         __func__, tester, len);
         len = FULL_DUPLEX_BLOCK_SIZE;
         err = ChanMuxClient_read(&testChanMuxClient,
@@ -242,7 +255,7 @@ ChanMuxTest_testFullDuplex(int tester)
                                  &len);
         if (SEOS_SUCCESS == err)
         {
-            Debug_LOG_DEBUG("%s: (tester %d) .. got %zu bytes from ChanMux",
+            Debug_LOG_DEBUG("%s: (tester %d) got %zu bytes from ChanMux",
                             __func__, tester, len);
             if (len > 0)
             {
