@@ -7,15 +7,12 @@
 
 #include "camkes.h"
 
-
-static char proxyBuffer[PAGE_SIZE];
-
 extern bool fullDuplexTestTxRunning;
 extern bool fullDuplexTestRxRunning;
 
 int run()
 {
-    seos_err_t retval = ChanMuxTest_init(CHANNEL_TEST_2, proxyBuffer);
+    seos_err_t retval = ChanMuxTest_init(CHANNEL_TEST_2);
 
     if (retval != SEOS_SUCCESS)
     {

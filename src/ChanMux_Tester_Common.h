@@ -18,8 +18,7 @@
  * @param chan the channel to init
  */
 seos_err_t
-ChanMuxTest_init(unsigned int chan,
-                 char* proxyBuffer);
+ChanMuxTest_init(unsigned int chan);
 
 /**
  * @brief Performs tests on parameters and return codes
