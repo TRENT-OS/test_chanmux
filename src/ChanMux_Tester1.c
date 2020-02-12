@@ -29,6 +29,9 @@ int run()
 
     if (fullDuplexTestTxRunning)
     {
+        // In this case our testFullDuplexTxStream() is running from the
+        // interface thread already thefore we get to run the counter part
+        // (testFullDuplex()) soon in order to consume the echoed bytes
         Debug_ASSERT(!fullDuplexTestRxRunning);
         ChanMuxTest_testFullDuplex(1);
         ChanMuxTest2_testFullDuplexTxStream(2);
