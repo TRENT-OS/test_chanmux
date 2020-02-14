@@ -23,7 +23,7 @@ ChanMuxTest_init(void);
  * @brief Performs tests on parameters and return codes
  */
 seos_err_t
-ChanMuxTest_testReturnCodes(int tester);
+ChanMuxTest_testReturnCodes(unsigned int tester);
 
 /**
  * @brief Performs test on overflow condition of ChanMux. A command is sent to
@@ -34,7 +34,7 @@ ChanMuxTest_testReturnCodes(int tester);
  * in printouts)
 */
 seos_err_t
-ChanMuxTest_testOverflow(int tester);
+ChanMuxTest_testOverflow(unsigned int tester);
 
 /**
  * @brief This fuction will stream data to the Proxy that will, in turn, echo
@@ -48,7 +48,7 @@ ChanMuxTest_testOverflow(int tester);
  * in printouts)
  */
 seos_err_t
-ChanMuxTest_testFullDuplexTxStream(int tester);
+ChanMuxTest_testFullDuplexTxStream(unsigned int tester);
 
 /**
  * @brief Performs test of full duplex streaming on ChanMux. This function is
@@ -60,4 +60,4 @@ ChanMuxTest_testFullDuplexTxStream(int tester);
  * in printouts)
  */
 seos_err_t
-ChanMuxTest_testFullDuplex(int tester);
+ChanMuxTest_testFullDuplex(unsigned int tester);

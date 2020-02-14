@@ -13,7 +13,7 @@ extern "C" {
 // this is defined like this in order to allow the
 // other side to overlow the channel more easily
 // (with a single packet)
-#define CHANMUX_FIFO_SIZE   (PAGE_SIZE / 2)
+#define CHANMUX_TEST_FIFO_SIZE   (PAGE_SIZE / 2)
 
 enum
 {
