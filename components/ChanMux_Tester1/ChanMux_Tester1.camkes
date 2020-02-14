@@ -8,6 +8,6 @@ component ChanMux_Tester1 {
 
     uses        ChanMuxInInf        ChanMuxRpc;
     provides    ChanMuxTestInf      ChanMuxTest;
-    uses        ChanMuxTestInf      ChanMuxTest2;
+    uses        ChanMuxTestInf      ChanMuxTestExt;
     consumes    DataAvailableEvent  ChanMuxSignal_dataAvailable;
 }

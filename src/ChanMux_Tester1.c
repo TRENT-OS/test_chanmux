@@ -31,12 +31,12 @@ int run()
         // (testFullDuplex()) soon in order to consume the echoed bytes
         Debug_ASSERT(!fullDuplexTestRxRunning);
         ChanMuxTest_testFullDuplex(1);
-        ChanMuxTest2_testFullDuplexTxStream(2);
+        ChanMuxTestExt_testFullDuplexTxStream(2);
     }
     else
     {
         Debug_ASSERT(!fullDuplexTestRxRunning);
-        ChanMuxTest2_testFullDuplexTxStream(2);
+        ChanMuxTestExt_testFullDuplexTxStream(2);
         ChanMuxTest_testFullDuplex(1);
     }
 
