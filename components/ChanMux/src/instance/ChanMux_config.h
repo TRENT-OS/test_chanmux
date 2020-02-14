@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 // this is defined like this in order to allow the
-// other size to overlow the channel more easily
+// other side to overlow the channel more easily
 // (with a single packet)
 #define CHANMUX_FIFO_SIZE   (PAGE_SIZE / 2)
 
