@@ -14,7 +14,7 @@ bool fullDuplexTestTxRunning = false;
 bool fullDuplexTestRxRunning = false;
 
 #define ITERATIONS                  20
-#define FULL_DUPLEX_BLOCK_SIZE      (CHANMUX_FIFO_SIZE / 2)
+#define FULL_DUPLEX_BLOCK_SIZE      (CHANMUX_TEST_FIFO_SIZE / 2)
 
 /* Instance variables ---------------------------------------------------------*/
 
@@ -30,12 +30,10 @@ cpyIntToBuf(uint32_t integer, char* buf)
 }
 
 seos_err_t
-ChanMuxTest_init(unsigned int chan)
+ChanMuxTest_init(void)
 {
-
-    bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient,
-                                        chan,
-                                        chanMuxDataPort);
+    // channel=0 parameter is nowadays obsolete and to be removed
+    bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient, 0, chanMuxDataPort);
     if (!isSuccess)
     {
         Debug_LOG_ERROR("Failed to construct testChanMuxClient!");
@@ -45,7 +43,7 @@ ChanMuxTest_init(unsigned int chan)
 }
 
 seos_err_t
-ChanMuxTest_testReturnCodes(int tester)
+ChanMuxTest_testReturnCodes(unsigned int tester)
 {
     seos_err_t retval = SEOS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
@@ -132,7 +130,7 @@ ChanMuxTest_testReturnCodes(int tester)
 }
 
 seos_err_t
-ChanMuxTest_testOverflow(int tester)
+ChanMuxTest_testOverflow(unsigned int tester)
 {
     seos_err_t retval = SEOS_ERROR_GENERIC;
     char testCmd[] = { CMD_TEST_OVERFLOW };
@@ -155,12 +153,12 @@ ChanMuxTest_testOverflow(int tester)
     }
     Debug_LOG_DEBUG("%s: (tester %d) command sent, retrieving data and overflow return code",
                     __func__, tester);
-    len = CHANMUX_FIFO_SIZE + 1; // we will try to read more then possible
+    len = CHANMUX_TEST_FIFO_SIZE + 1; // we will try to read more then possible
     err = ChanMuxClient_read(&testChanMuxClient,
                              dataBuf,
                              len,
                              &len);
-    if ((SEOS_ERROR_OVERFLOW_DETECTED == err) && (CHANMUX_FIFO_SIZE == len))
+    if ((SEOS_ERROR_OVERFLOW_DETECTED == err) && (CHANMUX_TEST_FIFO_SIZE == len))
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
         retval = SEOS_SUCCESS;
@@ -181,13 +179,16 @@ exit:
 // we will have a thread (the one running the interface) making Tx streaming
 // while the other is doing Rx streaming
 seos_err_t
-ChanMuxTest_testFullDuplexTxStream(int tester)
+ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
 {
     Debug_LOG_DEBUG("%s: (tester %d) waiting signal to run...", __func__, tester);
     fullDuplexTestTxRunning = true;
     // stay in the busy loop until the other thread begins with running the
     // tx stream
-    while (!fullDuplexTestRxRunning) seL4_Yield();
+    while (!fullDuplexTestRxRunning)
+    {
+        seL4_Yield();
+    }
     Debug_LOG_DEBUG("%s: (tester %d) signal received!", __func__, tester);
 
     seos_err_t retval       = SEOS_ERROR_GENERIC;
@@ -202,12 +203,12 @@ ChanMuxTest_testFullDuplexTxStream(int tester)
     // compose the command with the payload inside
     cpyIntToBuf(FULL_DUPLEX_BLOCK_SIZE, &testCmd[1]);
     memcpy(dataBuf, testCmd, sizeof(testCmd));
-    for (int j = 0; j < FULL_DUPLEX_BLOCK_SIZE; j++)
+    for (unsigned int j = 0; j < FULL_DUPLEX_BLOCK_SIZE; j++)
     {
         dataBuf[j + sizeof(testCmd)] = j % 256;
     }
 
-    for (int i = 0; i < ITERATIONS; i++)
+    for (unsigned int i = 0; i < ITERATIONS; i++)
     {
         Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger full duplex streaming...",
                         __func__, tester);
@@ -219,7 +220,7 @@ ChanMuxTest_testFullDuplexTxStream(int tester)
                             __func__, tester, err);
             goto exit;
         }
-        retval = 0;
+        retval = SEOS_SUCCESS;
     }
 exit:
     if (SEOS_SUCCESS == retval)
@@ -230,7 +231,7 @@ exit:
 }
 
 seos_err_t
-ChanMuxTest_testFullDuplex(int tester)
+ChanMuxTest_testFullDuplex(unsigned int tester)
 {
     Debug_LOG_DEBUG("%s: (tester %d) waiting signal to run...", __func__, tester);
     fullDuplexTestRxRunning = true;
@@ -259,8 +260,8 @@ ChanMuxTest_testFullDuplex(int tester)
                             __func__, tester, len);
             if (len > 0)
             {
-                int i = 0;
-                int expected = 0;
+                size_t i        = 0;
+                size_t expected = 0;
 
                 while (i < len)
                 {

@@ -15,10 +15,9 @@
  * @brief Initializes the ChanMuxClient and the ChanMuxTest and maps the passed
  * channel to the defined dataport
  *
- * @param chan the channel to init
  */
 seos_err_t
-ChanMuxTest_init(unsigned int chan);
+ChanMuxTest_init(void);
 
 /**
  * @brief Performs tests on parameters and return codes

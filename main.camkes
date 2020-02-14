@@ -35,6 +35,11 @@ assembly {
         uartDev.uartRegBase_size   = 0x1000;
 
         uartDrv.inputDataPort       = "R";
+
+        // assign endpoint badges for n:1 RPC interface of ChanMUX. The generic
+        // naming scheme is <component>.<interface>_attributes = <badge ID>
+        ChanMux_Tester1.ChanMuxRpc_attributes = 1;
+        ChanMux_Tester2.ChanMuxRpc_attributes = 2;
     }
 }
 

@@ -12,7 +12,7 @@ extern bool fullDuplexTestRxRunning;
 
 int run()
 {
-    seos_err_t retval = ChanMuxTest_init(CHANNEL_TEST_1);
+    seos_err_t retval = ChanMuxTest_init();
 
     if (retval != SEOS_SUCCESS)
     {

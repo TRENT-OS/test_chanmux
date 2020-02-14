@@ -198,14 +198,17 @@ ChanMuxOut_takeByte(char byte)
 //==============================================================================
 // CAmkES Interface
 //==============================================================================
-
+extern unsigned int ChanMuxIn_get_sender_id();
 //------------------------------------------------------------------------------
 seos_err_t
 ChanMuxIn_write(
-    unsigned int  chanNum,
+    unsigned int  chanNum, // legacy, to be removed
     size_t        len,
     size_t*       lenWritten)
 {
+    chanNum = (ChanMuxIn_get_sender_id() == 1)
+        ? CHANNEL_TEST_1 : CHANNEL_TEST_2;
+
     Debug_LOG_TRACE("%s(): channel %u, len %u", __func__, chanNum, len);
 
     // set defaults to error
@@ -240,10 +243,13 @@ ChanMuxIn_write(
 //------------------------------------------------------------------------------
 seos_err_t
 ChanMuxIn_read(
-    unsigned int  chanNum,
+    unsigned int  chanNum, // legacy, to be removed
     size_t        len,
     size_t*       lenRead)
 {
+    chanNum = (ChanMuxIn_get_sender_id() == 1)
+        ? CHANNEL_TEST_1 : CHANNEL_TEST_2;
+
     Debug_LOG_TRACE("%s(): channel %u, len %u", __func__, chanNum, len);
 
     // set defaults to error
@@ -262,7 +268,6 @@ ChanMuxIn_read(
         Debug_LOG_ERROR("%s(): invalid channel %u", __func__, chanNum);
         return SEOS_ERROR_ACCESS_DENIED;
     }
-
 
     Debug_ASSERT( NULL != dp );
     seos_err_t ret = ChanMux_read(ChanMux_getInstance(), chanNum, dp, &len);
