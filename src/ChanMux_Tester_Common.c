@@ -247,9 +247,9 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
 
     while (amount < (ITERATIONS * FULL_DUPLEX_BLOCK_SIZE))
     {
+        len = FULL_DUPLEX_BLOCK_SIZE;
         Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
                         __func__, tester, len);
-        len = FULL_DUPLEX_BLOCK_SIZE;
         err = ChanMuxClient_read(&testChanMuxClient,
                                  dataBuf,
                                  len,
