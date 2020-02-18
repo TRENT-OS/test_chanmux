@@ -9,10 +9,6 @@
 #define CMD_TEST_OVERFLOW       0
 #define CMD_TEST_FULL_DUPLEX    1
 
-static char dataBuf[PAGE_SIZE];
-bool fullDuplexTestTxRunning = false;
-bool fullDuplexTestRxRunning = false;
-
 #define ITERATIONS                  20
 #define FULL_DUPLEX_BLOCK_SIZE      (CHANMUX_TEST_FIFO_SIZE / 2)
 
@@ -45,6 +41,7 @@ ChanMuxTest_init(void)
 seos_err_t
 ChanMuxTest_testReturnCodes(unsigned int tester)
 {
+    static char dataBuf[PAGE_SIZE];
     seos_err_t retval = SEOS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
 
@@ -132,6 +129,7 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
 seos_err_t
 ChanMuxTest_testOverflow(unsigned int tester)
 {
+    static char dataBuf[PAGE_SIZE];
     seos_err_t retval = SEOS_ERROR_GENERIC;
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
@@ -160,8 +158,24 @@ ChanMuxTest_testOverflow(unsigned int tester)
                              &len);
     if ((SEOS_ERROR_OVERFLOW_DETECTED == err) && (CHANMUX_TEST_FIFO_SIZE == len))
     {
-        Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
-        retval = SEOS_SUCCESS;
+        len = 0;
+        err = ChanMuxClient_readAsync(&testChanMuxClient,
+                                      dataBuf,
+                                      len,
+                                      &len);
+        if ((SEOS_SUCCESS == err))
+        {
+            Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+            retval = SEOS_SUCCESS;
+        }
+        else
+        {
+            Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
+                            __func__,
+                            tester,
+                            err,
+                            len);
+        }
     }
     else
     {
@@ -181,16 +195,6 @@ exit:
 seos_err_t
 ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
 {
-    Debug_LOG_DEBUG("%s: (tester %d) waiting signal to run...", __func__, tester);
-    fullDuplexTestTxRunning = true;
-    // stay in the busy loop until the other thread begins with running the
-    // tx stream
-    while (!fullDuplexTestRxRunning)
-    {
-        seL4_Yield();
-    }
-    Debug_LOG_DEBUG("%s: (tester %d) signal received!", __func__, tester);
-
     seos_err_t retval       = SEOS_ERROR_GENERIC;
     char testCmd[5]         = { CMD_TEST_FULL_DUPLEX };
     size_t len              = 0;
@@ -233,17 +237,12 @@ exit:
 seos_err_t
 ChanMuxTest_testFullDuplex(unsigned int tester)
 {
-    Debug_LOG_DEBUG("%s: (tester %d) waiting signal to run...", __func__, tester);
-    fullDuplexTestRxRunning = true;
-    // stay in the busy loop until the other thread begins with running the
-    // tx stream
-    while (!fullDuplexTestTxRunning) seL4_Yield();
-    Debug_LOG_DEBUG("%s: (tester %d) signal received!", __func__, tester);
-
     seos_err_t retval   = SEOS_ERROR_GENERIC;
     seos_err_t err      = SEOS_ERROR_GENERIC;
     size_t len          = 0;
     size_t amount       = 0;
+
+    static char dataBuf[PAGE_SIZE];
 
     while (amount < (ITERATIONS * FULL_DUPLEX_BLOCK_SIZE))
     {

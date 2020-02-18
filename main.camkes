@@ -25,8 +25,10 @@ assembly {
         connection  seL4SharedData      dataConnection      (from tester1.chanMuxDataPort, to chanMux.chanmux_Tester1DataPort);
         connection  seL4SharedData      dataConnection2     (from tester2.chanMuxDataPort, to chanMux.chanmux_Tester2DataPort);
 
-        connection  seL4Notification    dataAvailableLan    (from chanMux.dataAvailableMain, to tester1.ChanMuxSignal_dataAvailable);
-        connection  seL4Notification    dataAvailableLan2   (from chanMux.dataAvailableMain, to tester2.ChanMuxSignal_dataAvailable);
+        connection  seL4Notification    dataAvailableLan        (from chanMux.dataAvailableMain, to tester1.ChanMuxSignal_dataAvailable);
+        connection  seL4Notification    dataAvailableLan2       (from chanMux.dataAvailableMain, to tester2.ChanMuxSignal_dataAvailable);
+        connection  seL4Notification    tester1Ready4FullDuplex (from tester1.ready, to tester2.tester1Ready);
+        connection  seL4Notification    tester2Ready4FullDuplex (from tester2.ready, to tester1.tester2Ready);
 
         connection  seL4HardwareMMIO    uart_memio          (from uartDrv.uartRegBase, to uartDev.uartRegBase);
     }

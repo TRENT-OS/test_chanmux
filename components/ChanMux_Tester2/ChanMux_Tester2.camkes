@@ -9,5 +9,8 @@ component ChanMux_Tester2 {
     uses        ChanMuxInInf        ChanMuxRpc;
     provides    ChanMuxTestInf      ChanMuxTest;
     uses        ChanMuxTestInf      ChanMuxTestExt;
-    consumes    DataAvailableEvent  ChanMuxSignal_dataAvailable;
+
+    consumes    DataAvailableEvent      ChanMuxSignal_dataAvailable;
+    emits       Ready4FullDuplexEvent   ready;
+    consumes    Ready4FullDuplexEvent   tester1Ready;
 }
