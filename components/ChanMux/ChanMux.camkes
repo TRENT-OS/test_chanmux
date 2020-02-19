@@ -7,12 +7,12 @@ component ChanMux {
     provides  ChanMuxInInf        ChanMuxIn;
     //-------------------------------------------------
     // interface to ChanMux_Tester1
-    dataport  Buf                 chanmux_Tester1RDataPort;
-    dataport  Buf                 chanmux_Tester1WDataPort;
+    dataport  Buf                 tester1RDataPort;
+    dataport  Buf                 tester1WDataPort;
     //-------------------------------------------------
     // interface to ChanMux_Tester2
-    dataport  Buf                 chanmux_Tester2RDataPort;
-    dataport  Buf                 chanmux_Tester2WDataPort;
+    dataport  Buf                 tester2RDataPort;
+    dataport  Buf                 tester2WDataPort;
 
     //-------------------------------------------------
     // MUX Uart interface

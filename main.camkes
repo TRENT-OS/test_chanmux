@@ -22,10 +22,10 @@ assembly {
         connection  seL4RPCCall         uart_chanmux        (from uartDrv.Output, to chanMux.ChanMuxOut);
 
         connection  seL4SharedData      uart_dataConnection (from chanMux.outputDataPort, to uartDrv.inputDataPort);
-        connection  seL4SharedData      dataConnection1R    (from tester1.chanMuxRDataPort, to chanMux.chanmux_Tester1RDataPort);
-        connection  seL4SharedData      dataConnection1W    (from tester1.chanMuxWDataPort, to chanMux.chanmux_Tester1WDataPort);
-        connection  seL4SharedData      dataConnection2R    (from tester2.chanMuxRDataPort, to chanMux.chanmux_Tester2RDataPort);
-        connection  seL4SharedData      dataConnection2W    (from tester2.chanMuxWDataPort, to chanMux.chanmux_Tester2WDataPort);
+        connection  seL4SharedData      dataConnection1R    (from tester1.chanMuxRDataPort, to chanMux.tester1RDataPort);
+        connection  seL4SharedData      dataConnection1W    (from tester1.chanMuxWDataPort, to chanMux.tester1WDataPort);
+        connection  seL4SharedData      dataConnection2R    (from tester2.chanMuxRDataPort, to chanMux.tester2RDataPort);
+        connection  seL4SharedData      dataConnection2W    (from tester2.chanMuxWDataPort, to chanMux.tester2WDataPort);
 
         connection  seL4Notification    dataAvailableLan        (from chanMux.dataAvailableMain, to tester1.ChanMuxSignal_dataAvailable);
         connection  seL4Notification    dataAvailableLan2       (from chanMux.dataAvailableMain, to tester2.ChanMuxSignal_dataAvailable);

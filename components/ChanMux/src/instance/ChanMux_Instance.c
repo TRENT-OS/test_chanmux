@@ -84,8 +84,49 @@ static const ChanMuxConfig_t cfgChanMux =
     }
 };
 
-static ChannelDataport_t wDataports[CHANMUX_NUM_CHANNELS] = { 0 };
-static ChannelDataport_t rDataports[CHANMUX_NUM_CHANNELS] = { 0 };
+static const ChannelDataport_t wDataports[CHANMUX_NUM_CHANNELS] =
+{
+    { 0 }, // 0
+    { 0 }, // 1
+    { 0 }, // 2
+    { 0 }, // 3
+    { 0 }, // 4
+    { 0 }, // 5
+    { 0 }, // 6
+    { 0 }, // 7
+    { 0 }, // 8
+    { 0 }, // 9
+    { // 10
+        .io  = (void**) &tester1WDataPort,
+        .len = PAGE_SIZE
+    },
+    { // 11
+        .io  = (void**) &tester2WDataPort,
+        .len = PAGE_SIZE
+    }
+};
+
+static const ChannelDataport_t rDataports[CHANMUX_NUM_CHANNELS] =
+{
+    { 0 }, // 0
+    { 0 }, // 1
+    { 0 }, // 2
+    { 0 }, // 3
+    { 0 }, // 4
+    { 0 }, // 5
+    { 0 }, // 6
+    { 0 }, // 7
+    { 0 }, // 8
+    { 0 }, // 9
+    { // 10
+        .io  = (void**) &tester1RDataPort,
+        .len = PAGE_SIZE
+    },
+    { // 11
+        .io  = (void**) &tester2RDataPort,
+        .len = PAGE_SIZE
+    }
+};
 
 //------------------------------------------------------------------------------
 const ChanMuxConfig_t*
@@ -125,27 +166,6 @@ ChanMux_getInstance(void)
     {
         .lock = Mutex_lock,
         .unlock = Mutex_unlock,
-    };
-
-    rDataports[CHANNEL_TEST_1] = (ChannelDataport_t)
-    { // 10
-        .io  = (void**) &chanmux_Tester1RDataPort,
-        .len = PAGE_SIZE
-    };
-    rDataports[CHANNEL_TEST_2] = (ChannelDataport_t)
-    { // 11
-        .io  = (void**) &chanmux_Tester2RDataPort,
-        .len = PAGE_SIZE
-    };
-    wDataports[CHANNEL_TEST_1] = (ChannelDataport_t)
-    { // 10
-        .io  = (void**) &chanmux_Tester1WDataPort,
-        .len = PAGE_SIZE
-    };
-    wDataports[CHANNEL_TEST_2] = (ChannelDataport_t)
-    { // 11
-        .io  = (void**) &chanmux_Tester2WDataPort,
-        .len = PAGE_SIZE
     };
 
     if ((NULL == self) && ChanMux_ctor(&theOne,
