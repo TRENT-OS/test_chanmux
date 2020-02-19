@@ -84,57 +84,8 @@ static const ChanMuxConfig_t cfgChanMux =
     }
 };
 
-const ChannelDataport_t dataports[] =
-{
-    { // 0
-        .io  = NULL,
-        .len = 0
-    },
-    { // 1
-        .io  = NULL,
-        .len = 0
-    },
-    { // 2
-        .io  = NULL,
-        .len = 0
-    },
-    { // 3
-        .io  = NULL,
-        .len = 0
-    },
-    { // 4
-        .io  = NULL,
-        .len = 0
-    },
-    { // 5
-        .io  = NULL,
-        .len = 0
-    },
-    { // 6
-        .io  = NULL,
-        .len = 0
-    },
-    { // 7
-        .io  = NULL,
-        .len = 0
-    },
-    { // 8
-        .io  = NULL,
-        .len = 0
-    },
-    { // 9
-        .io  = NULL,
-        .len = 0
-    },
-    { // 10
-        .io  = (void**) &chanmux_Tester1DataPort,
-        .len = PAGE_SIZE
-    },
-    { // 11
-        .io  = (void**) &chanmux_Tester2DataPort,
-        .len = PAGE_SIZE
-    }
-};
+static ChannelDataport_t wDataports[CHANMUX_NUM_CHANNELS] = { 0 };
+static ChannelDataport_t rDataports[CHANMUX_NUM_CHANNELS] = { 0 };
 
 //------------------------------------------------------------------------------
 const ChanMuxConfig_t*
@@ -174,6 +125,27 @@ ChanMux_getInstance(void)
     {
         .lock = Mutex_lock,
         .unlock = Mutex_unlock,
+    };
+
+    rDataports[CHANNEL_TEST_1] = (ChannelDataport_t)
+    { // 10
+        .io  = (void**) &chanmux_Tester1RDataPort,
+        .len = PAGE_SIZE
+    };
+    rDataports[CHANNEL_TEST_2] = (ChannelDataport_t)
+    { // 11
+        .io  = (void**) &chanmux_Tester2RDataPort,
+        .len = PAGE_SIZE
+    };
+    wDataports[CHANNEL_TEST_1] = (ChannelDataport_t)
+    { // 10
+        .io  = (void**) &chanmux_Tester1WDataPort,
+        .len = PAGE_SIZE
+    };
+    wDataports[CHANNEL_TEST_2] = (ChannelDataport_t)
+    { // 11
+        .io  = (void**) &chanmux_Tester2WDataPort,
+        .len = PAGE_SIZE
     };
 
     if ((NULL == self) && ChanMux_ctor(&theOne,
@@ -220,7 +192,7 @@ ChanMuxIn_write(
     //---------------------------------
     case CHANNEL_TEST_1:
     case CHANNEL_TEST_2:
-        dp = &dataports[chanNum];
+        dp = &wDataports[chanNum];
         break;
     //---------------------------------
     default:
@@ -261,7 +233,7 @@ ChanMuxIn_read(
     //---------------------------------
     case CHANNEL_TEST_1:
     case CHANNEL_TEST_2:
-        dp = &dataports[chanNum];
+        dp = &rDataports[chanNum];
         break;
     //---------------------------------
     default:

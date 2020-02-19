@@ -29,7 +29,10 @@ seos_err_t
 ChanMuxTest_init(void)
 {
     // channel=0 parameter is nowadays obsolete and to be removed
-    bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient, 0, chanMuxDataPort);
+    bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient,
+                                        0,
+                                        chanMuxRDataPort,
+                                        chanMuxWDataPort);
     if (!isSuccess)
     {
         Debug_LOG_ERROR("Failed to construct testChanMuxClient!");
@@ -110,7 +113,7 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     }
     // test buffer overlap
     else if (ChanMuxClient_read(&testChanMuxClient,
-                                testChanMuxClient.dataport,
+                                testChanMuxClient.readDataport,
                                 PAGE_SIZE + 1,
                                 &len)
             != SEOS_ERROR_INVALID_PARAMETER)
