@@ -26,11 +26,11 @@ cpyIntToBuf(uint32_t integer, char* buf)
 }
 
 seos_err_t
-ChanMuxTest_init(void)
+ChanMuxTest_init(unsigned int chan)
 {
     // channel=0 parameter is nowadays obsolete and to be removed
     bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient,
-                                        0,
+                                        chan,
                                         chanMuxRDataPort,
                                         chanMuxWDataPort);
     if (!isSuccess)

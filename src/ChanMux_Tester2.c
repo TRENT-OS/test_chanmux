@@ -9,7 +9,7 @@
 
 int run()
 {
-    seos_err_t retval = ChanMuxTest_init();
+    seos_err_t retval = ChanMuxTest_init(CHANNEL_TEST_2);
 
     if (retval != SEOS_SUCCESS)
     {

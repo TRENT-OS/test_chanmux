@@ -198,9 +198,6 @@ ChanMuxIn_write(
     size_t        len,
     size_t*       lenWritten)
 {
-    chanNum = (ChanMuxIn_get_sender_id() == 1)
-        ? CHANNEL_TEST_1 : CHANNEL_TEST_2;
-
     Debug_LOG_TRACE("%s(): channel %u, len %u", __func__, chanNum, len);
 
     // set defaults to error
@@ -239,9 +236,6 @@ ChanMuxIn_read(
     size_t        len,
     size_t*       lenRead)
 {
-    chanNum = (ChanMuxIn_get_sender_id() == 1)
-        ? CHANNEL_TEST_1 : CHANNEL_TEST_2;
-
     Debug_LOG_TRACE("%s(): channel %u, len %u", __func__, chanNum, len);
 
     // set defaults to error
