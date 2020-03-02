@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "LibDebug/Debug.h"
 #include "camkes.h"
-#include "ChanMux_config.h"
+#include "seos_system_config.h"
 #include "ChanMux_Tester_Common.h"
 #include "SeosError.h"
 
