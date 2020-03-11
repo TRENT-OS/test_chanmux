@@ -61,3 +61,15 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester);
  */
 seos_err_t
 ChanMuxTest_testFullDuplex(unsigned int tester);
+
+/**
+ * @brief Performs test of max size (MTU) sending. This sends a ChanMux MTU + 1
+ * sized amount of data with a well known pattern. The other side analyze the
+ * pattern and returns the index of the first byte that mismatches the pattern.
+ * This must be consistent with the fact that only an amount MTU size is sent.
+ *
+ * @param tester an ID that identifies the thread running the function (used
+ * in printouts)
+ */
+seos_err_t
+ChanMuxTest_testMaxSize(unsigned int tester);

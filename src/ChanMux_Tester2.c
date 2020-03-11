@@ -29,6 +29,8 @@ int run()
     ChanMuxTest_testFullDuplex(2);
     ChanMuxTestExt_testFullDuplexTxStream(1);
 
+    ChanMuxTest_testMaxSize(2);
+
     Debug_LOG_INFO("%s: Done", __func__);
     return 0;
 }
