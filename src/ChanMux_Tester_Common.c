@@ -325,6 +325,7 @@ ChanMuxTest_testMaxSize(unsigned int tester)
     seos_err_t err      = SEOS_ERROR_GENERIC;
     size_t len          = ChanMuxClient_MTU + 1;
 
+    // PAGE_SIZE is the size of the dataport to the ChanMux
     static char dataBuf[PAGE_SIZE];
     char testCmd[5]     = { CMD_TEST_MAX_SIZE };
     size_t patternLen   =  len - sizeof(testCmd);
@@ -354,7 +355,9 @@ ChanMuxTest_testMaxSize(unsigned int tester)
         goto exit;
     }
 
-    len = 4; // uint32 is the answer with the first byte that mismatches the pattern
+    // expecting to read an uint32, its value is the offset of the
+    // first byte that mismatches the pattern
+    len = 4;
     Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
                     __func__, tester, len);
     err = ChanMuxClient_read(&testChanMuxClient,
