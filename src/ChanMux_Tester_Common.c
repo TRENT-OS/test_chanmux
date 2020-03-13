@@ -32,6 +32,84 @@ cpyBufToInt(const char* buf)
     return (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | (buf[3]);
 }
 
+static seos_err_t
+testMaxSize(unsigned int tester, size_t len)
+{
+    seos_err_t retval   = SEOS_ERROR_GENERIC;
+    seos_err_t err      = SEOS_ERROR_GENERIC;
+
+    // PAGE_SIZE is the size of the dataport to the ChanMux
+    static char dataBuf[PAGE_SIZE];
+    char testCmd[5]             = { CMD_TEST_MAX_SIZE };
+    const size_t maxPatterLen   = ChanMuxClient_MTU - sizeof(testCmd);
+    size_t patternLen           = len - sizeof(testCmd);
+
+    // compose the command with the payload inside
+    cpyIntToBuf(patternLen, &testCmd[1]);
+
+    memcpy(dataBuf, testCmd, sizeof(testCmd));
+    for (unsigned int j = 0; j < patternLen; j++)
+    {
+        dataBuf[j + sizeof(testCmd)] = j % 256;
+    }
+
+    size_t lenWritten = 0;
+    Debug_LOG_DEBUG("%s: (tester %d) sending command sized (%zu), ChanMux MTU is %zu ...",
+                    __func__, tester, len, ChanMuxClient_MTU);
+    err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &lenWritten);
+    if (SEOS_SUCCESS != err)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d) got error %d when trying to send a request to proxy",
+                        __func__, tester, err);
+        goto exit;
+    }
+    Debug_LOG_DEBUG("%s: (tester %d) %zu sent", __func__, tester, lenWritten);
+
+    // expecting to read an uint32, its value is the offset of the
+    // first byte that mismatches the pattern
+    size_t lenRead = 0;
+    Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
+                    __func__, tester, sizeof(uint32_t));
+    err = ChanMuxClient_read(&testChanMuxClient,
+                             dataBuf,
+                             sizeof(uint32_t),
+                             &lenRead);
+    if (SEOS_SUCCESS != err)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
+                        __func__,
+                        tester,
+                        err,
+                        lenRead);
+        goto exit;
+    }
+
+    size_t numMatches       = cpyBufToInt(dataBuf);
+    size_t expextedMatches  = len > ChanMuxClient_MTU ?
+        maxPatterLen : patternLen;
+    if (numMatches != expextedMatches)
+    {
+        Debug_LOG_ERROR("%s: FAIL (tester %d), peer complains of %zu out of %zu matches",
+                        __func__,
+                        tester,
+                        numMatches,
+                        expextedMatches);
+        goto exit;
+    }
+    else
+    {
+        Debug_LOG_DEBUG("%s: (tester %d) %zu out of %zu match",
+                        __func__,
+                        tester,
+                        numMatches,
+                        expextedMatches);
+    }
+    retval = SEOS_SUCCESS;
+exit:
+    return retval;
+}
+
+
 seos_err_t
 ChanMuxTest_init(unsigned int chan)
 {
@@ -321,70 +399,18 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
 seos_err_t
 ChanMuxTest_testMaxSize(unsigned int tester)
 {
-    seos_err_t retval   = SEOS_ERROR_GENERIC;
-    seos_err_t err      = SEOS_ERROR_GENERIC;
-    size_t len          = ChanMuxClient_MTU + 1;
+    seos_err_t retval = testMaxSize(tester, ChanMuxClient_MTU - 1);
 
-    // PAGE_SIZE is the size of the dataport to the ChanMux
-    static char dataBuf[PAGE_SIZE];
-    char testCmd[5]     = { CMD_TEST_MAX_SIZE };
-    size_t patternLen   =  len - sizeof(testCmd);
-
-    // compose the command with the payload inside
-    cpyIntToBuf(patternLen, &testCmd[1]);
-
-    memcpy(dataBuf, testCmd, sizeof(testCmd));
-    for (unsigned int j = 0; j < patternLen; j++)
+    if (SEOS_SUCCESS == retval)
     {
-        dataBuf[j + sizeof(testCmd)] = j % 256;
-    }
-    Debug_LOG_DEBUG("%s: (tester %d) sending command sized as the ChanMux MTU + 1 (%zu) ...",
-                    __func__, tester, len);
-
-    err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &len);
-    if (SEOS_SUCCESS != err)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %d) got error %d when trying to send a request to proxy",
-                        __func__, tester, err);
-        goto exit;
-    }
-    if (len != ChanMuxClient_MTU)
-    {
-        Debug_LOG_FATAL("%s: FAIL (tester %d) amount of bytes written cannot be %zu",
-                        __func__, tester, len);
-        goto exit;
+        retval = testMaxSize(tester, ChanMuxClient_MTU);
     }
 
-    // expecting to read an uint32, its value is the offset of the
-    // first byte that mismatches the pattern
-    len = 4;
-    Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
-                    __func__, tester, len);
-    err = ChanMuxClient_read(&testChanMuxClient,
-                             dataBuf,
-                             len,
-                             &len);
-    if (SEOS_SUCCESS != err)
+    if (SEOS_SUCCESS == retval)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
-                        __func__,
-                        tester,
-                        err,
-                        len);
-        goto exit;
+        retval = testMaxSize(tester, ChanMuxClient_MTU + 1);
     }
 
-    size_t numMatches = cpyBufToInt(dataBuf);
-    if (numMatches != patternLen - 1) // one byte out because the packet gets truncated to MTU
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), peer complains a pattern mismatch at byte # %d",
-                        __func__,
-                        tester,
-                        numMatches + 1);
-        goto exit;
-    }
-    retval = SEOS_SUCCESS;
-exit:
     if (SEOS_SUCCESS == retval)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
