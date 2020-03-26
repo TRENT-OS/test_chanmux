@@ -54,21 +54,21 @@ testMaxSize(unsigned int tester, size_t len)
     }
 
     size_t lenWritten = 0;
-    Debug_LOG_DEBUG("%s: (tester %d) sending command sized (%zu), ChanMux MTU is %zu ...",
+    Debug_LOG_DEBUG("%s: (tester %u) sending command sized (%zu), ChanMux MTU is %zu ...",
                     __func__, tester, len, ChanMuxClient_MTU);
     err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &lenWritten);
     if (SEOS_SUCCESS != err)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d) got error %d when trying to send a request to proxy",
+        Debug_LOG_ERROR("%s: FAIL (tester %u) got error %d when trying to send a request to proxy",
                         __func__, tester, err);
         goto exit;
     }
-    Debug_LOG_DEBUG("%s: (tester %d) %zu sent", __func__, tester, lenWritten);
+    Debug_LOG_DEBUG("%s: (tester %u) %zu sent", __func__, tester, lenWritten);
 
     // expecting to read an uint32, its value is the offset of the
     // first byte that mismatches the pattern
     size_t lenRead = 0;
-    Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
+    Debug_LOG_DEBUG("%s: (tester %u) attempting to read %zu bytes from ChanMux...",
                     __func__, tester, sizeof(uint32_t));
     err = ChanMuxClient_read(&testChanMuxClient,
                              dataBuf,
@@ -76,7 +76,7 @@ testMaxSize(unsigned int tester, size_t len)
                              &lenRead);
     if (SEOS_SUCCESS != err)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
+        Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
                         __func__,
                         tester,
                         err,
@@ -89,7 +89,7 @@ testMaxSize(unsigned int tester, size_t len)
         maxPatterLen : patternLen;
     if (numMatches != expextedMatches)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), peer complains of %zu out of %zu matches",
+        Debug_LOG_ERROR("%s: FAIL (tester %u), peer complains of %zu out of %zu matches",
                         __func__,
                         tester,
                         numMatches,
@@ -98,7 +98,7 @@ testMaxSize(unsigned int tester, size_t len)
     }
     else
     {
-        Debug_LOG_DEBUG("%s: (tester %d) %zu out of %zu match",
+        Debug_LOG_DEBUG("%s: (tester %u) %zu out of %zu match",
                         __func__,
                         tester,
                         numMatches,
@@ -139,13 +139,13 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     if (ChanMuxClient_write(&testChanMuxClient, NULL, len, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, len, NULL)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_write(&testChanMuxClient,
@@ -154,19 +154,19 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
                                  &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient, NULL, len, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, len, NULL)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient,
@@ -174,25 +174,25 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
                                      &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, NULL, len, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, len, NULL)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     // test buffer overlap
@@ -202,12 +202,12 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
                                 &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d)",
+        Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else
     {
-        Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
         retval = SEOS_SUCCESS;
     }
     return retval;
@@ -221,7 +221,7 @@ ChanMuxTest_testOverflow(unsigned int tester)
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
-    Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger overflow condition...",
+    Debug_LOG_DEBUG("%s: (tester %u) sending command to trigger overflow condition...",
                     __func__, tester);
     seos_err_t err = ChanMuxClient_write(&testChanMuxClient,
                                          testCmd,
@@ -229,14 +229,14 @@ ChanMuxTest_testOverflow(unsigned int tester)
                                          &len);
     if (SEOS_SUCCESS != err)
     {
-        Debug_LOG_ERROR("%s: (tester %d) failed trying to send a command, err was %d with %zu bytes written",
+        Debug_LOG_ERROR("%s: (tester %u) failed trying to send a command, err was %d with %zu bytes written",
                         __func__,
                         tester,
                         err,
                         len);
         goto exit;
     }
-    Debug_LOG_DEBUG("%s: (tester %d) command sent, retrieving data and overflow return code",
+    Debug_LOG_DEBUG("%s: (tester %u) command sent, retrieving data and overflow return code",
                     __func__, tester);
     len = CHANMUX_TEST_FIFO_SIZE + 1; // we will try to read more then possible
     err = ChanMuxClient_read(&testChanMuxClient,
@@ -252,12 +252,12 @@ ChanMuxTest_testOverflow(unsigned int tester)
                                       &len);
         if ((SEOS_SUCCESS == err))
         {
-            Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+            Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
             retval = SEOS_SUCCESS;
         }
         else
         {
-            Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
+            Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
                             __func__,
                             tester,
                             err,
@@ -266,7 +266,7 @@ ChanMuxTest_testOverflow(unsigned int tester)
     }
     else
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
+        Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
                         __func__,
                         tester,
                         err,
@@ -301,13 +301,13 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
 
     for (unsigned int i = 0; i < ITERATIONS; i++)
     {
-        Debug_LOG_DEBUG("%s: (tester %d) sending command to trigger full duplex streaming...",
+        Debug_LOG_DEBUG("%s: (tester %u) sending command to trigger full duplex streaming...",
                         __func__, tester);
         len = sizeof(testCmd) + FULL_DUPLEX_BLOCK_SIZE;
         err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &len);
         if (SEOS_SUCCESS != err)
         {
-            Debug_LOG_ERROR("%s: (tester %d) got error %d when trying to send a request to proxy",
+            Debug_LOG_ERROR("%s: (tester %u) got error %d when trying to send a request to proxy",
                             __func__, tester, err);
             goto exit;
         }
@@ -316,7 +316,7 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
 exit:
     if (SEOS_SUCCESS == retval)
     {
-        Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     }
     return retval;
 }
@@ -334,7 +334,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
     while (amount < (ITERATIONS * FULL_DUPLEX_BLOCK_SIZE))
     {
         len = FULL_DUPLEX_BLOCK_SIZE;
-        Debug_LOG_DEBUG("%s: (tester %d) attempting to read %zu bytes from ChanMux...",
+        Debug_LOG_DEBUG("%s: (tester %u) attempting to read %zu bytes from ChanMux...",
                         __func__, tester, len);
         err = ChanMuxClient_read(&testChanMuxClient,
                                  dataBuf,
@@ -342,7 +342,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
                                  &len);
         if (SEOS_SUCCESS == err)
         {
-            Debug_LOG_DEBUG("%s: (tester %d) got %zu bytes from ChanMux",
+            Debug_LOG_DEBUG("%s: (tester %u) got %zu bytes from ChanMux",
                             __func__, tester, len);
             if (len > 0)
             {
@@ -367,7 +367,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
                 }
                 else
                 {
-                    Debug_LOG_ERROR("%s: FAIL (tester %d), data received mismatches the expected pattern @ byte #%d, expected 0x%02x but received 0x%02x",
+                    Debug_LOG_ERROR("%s: FAIL (tester %u), data received mismatches the expected pattern @ byte #%d, expected 0x%02x but received 0x%02x",
                                     __func__,
                                     tester,
                                     amount + i,
@@ -380,7 +380,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
         }
         else
         {
-            Debug_LOG_ERROR("%s: FAIL (tester %d), err was %d with %zu bytes read",
+            Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
                             __func__,
                             tester,
                             err,
@@ -391,7 +391,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
  exit:
     if (SEOS_SUCCESS == retval)
     {
-        Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     }
     return retval;
 }
@@ -413,7 +413,7 @@ ChanMuxTest_testMaxSize(unsigned int tester)
 
     if (SEOS_SUCCESS == retval)
     {
-        Debug_LOG_INFO("%s: SUCCESS (tester %d)", __func__, tester);
+        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     }
     return retval;
 }
