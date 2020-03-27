@@ -1,10 +1,10 @@
-import "../../interfaces/ChanMuxInf.camkes";
+import <seos_if_chanMux.camkes>;
 import "../../interfaces/UartInf.camkes";
 
 component ChanMux {
 
     emits     DataAvailableEvent  dataAvailableMain;
-    provides  ChanMuxInInf        ChanMuxIn;
+    provides  ChanMuxDriverInf    ChanMuxRpc;
     //-------------------------------------------------
     // interface to ChanMux_Tester1
     dataport  Buf                 tester1RDataPort;

@@ -13,8 +13,8 @@ assembly {
         component   UartDev             uartDev;
         component   UartDrv             uartDrv;
 
-        connection  seL4RPCCall         tester1_chanmux     (from tester1.ChanMuxRpc, to chanMux.ChanMuxIn);
-        connection  seL4RPCCall         tester2_chanmux     (from tester2.ChanMuxRpc, to chanMux.ChanMuxIn);
+        connection  seL4RPCCall         tester1_chanmux     (from tester1.ChanMuxRpc, to chanMux.ChanMuxRpc);
+        connection  seL4RPCCall         tester2_chanmux     (from tester2.ChanMuxRpc, to chanMux.ChanMuxRpc);
         connection  seL4RPCCall         tester1_txstream    (from tester1.ChanMuxTestExt, to tester2.ChanMuxTest);
         connection  seL4RPCCall         tester2_txstream    (from tester2.ChanMuxTestExt, to tester1.ChanMuxTest);
 

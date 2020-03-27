@@ -193,7 +193,7 @@ ChanMuxOut_takeByte(char byte)
 extern unsigned int ChanMuxIn_get_sender_id();
 //------------------------------------------------------------------------------
 seos_err_t
-ChanMuxIn_write(
+ChanMuxRpc_write(
     unsigned int  chanNum, // legacy, to be removed
     size_t        len,
     size_t*       lenWritten)
@@ -231,7 +231,7 @@ ChanMuxIn_write(
 
 //------------------------------------------------------------------------------
 seos_err_t
-ChanMuxIn_read(
+ChanMuxRpc_read(
     unsigned int  chanNum, // legacy, to be removed
     size_t        len,
     size_t*       lenRead)

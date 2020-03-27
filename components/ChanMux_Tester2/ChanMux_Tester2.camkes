@@ -1,4 +1,4 @@
-import "../../interfaces/ChanMuxInf.camkes";
+import <seos_if_chanMux.camkes>;
 import "../../interfaces/ChanMuxTestInf.camkes";
 
 component ChanMux_Tester2 {
@@ -7,7 +7,7 @@ component ChanMux_Tester2 {
     dataport    Buf                 chanMuxWDataPort;
     dataport    Buf                 chanMuxRDataPort;
 
-    uses        ChanMuxInInf        ChanMuxRpc;
+    uses        ChanMuxDriverInf    ChanMuxRpc;
     provides    ChanMuxTestInf      ChanMuxTest;
     uses        ChanMuxTestInf      ChanMuxTestExt;
 
