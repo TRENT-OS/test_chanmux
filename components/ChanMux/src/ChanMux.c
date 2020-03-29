@@ -1,5 +1,5 @@
 /*
- *  WAN/LAN/NetworkStack Channel MUX
+ *  Channel MUX
  *
  *  Copyright (C) 2019, Hensoldt Cyber GmbH
  */
