@@ -1,7 +1,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include <stdio.h>
-#include "seos_system_config.h"
+#include "system_config.h"
 #include "ChanMux/ChanMuxClient.h"
 #include "camkes.h"
 #include "LibDebug/Debug.h"

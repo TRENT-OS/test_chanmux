@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.7.2)
 
-seos_set_config_file(seos_system_config.h)
+seos_set_config_file(system_config.h)
 
 seos_use_libs(
     SEOS_LIBS
@@ -8,7 +8,7 @@ seos_use_libs(
 )
 
 
-project(seos_system_config C)
+project(system_config C)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
@@ -22,7 +22,7 @@ DeclareCAmkESComponent(ChanMux_Tester1
     C_FLAGS
         -Wall -Werror
     LIBS
-        seos_system_config
+        system_config
         seos_core_api
         seos_libs
         chanmux_client
@@ -35,7 +35,7 @@ DeclareCAmkESComponent(ChanMux_Tester2
     C_FLAGS
         -Wall -Werror
     LIBS
-        seos_system_config
+        system_config
         seos_core_api
         seos_libs
         chanmux_client
@@ -55,7 +55,7 @@ DeclareCAmkESComponent(ChanMux
     C_FLAGS
         -Wall -Werror
     LIBS
-        seos_system_config
+        system_config
         seos_core_api
         seos_libs
         chanmux_server
