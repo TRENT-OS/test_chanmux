@@ -3,19 +3,24 @@ import "../../interfaces/UartInf.camkes";
 
 component ChanMux {
 
-    emits     DataAvailableEvent  dataAvailableMain;
+    //-------------------------------------------------
+    // generic upper interface
     provides  ChanMuxDriverInf    ChanMuxRpc;
-    //-------------------------------------------------
-    // interface to ChanMux_Tester1
-    dataport  Buf                 tester1RDataPort;
-    dataport  Buf                 tester1WDataPort;
-    //-------------------------------------------------
-    // interface to ChanMux_Tester2
-    dataport  Buf                 tester2RDataPort;
-    dataport  Buf                 tester2WDataPort;
 
     //-------------------------------------------------
-    // MUX Uart interface
+    // upper interface to ChanMux_Tester1
+    dataport  Buf                 tester1RDataPort;
+    dataport  Buf                 tester1WDataPort;
+    emits     DataAvailableEvent  dataAvailableMain;
+
+    //-------------------------------------------------
+    // upper interface to ChanMux_Tester2
+    dataport  Buf                 tester2RDataPort;
+    dataport  Buf                 tester2WDataPort;
+    // also uses dataAvailableMain
+
+    //-------------------------------------------------
+    // lower interface to UART
     dataport  Buf                 outputDataPort;
     uses      UartInf             Output;
     provides  ChanMuxOutInf       ChanMuxOut;
