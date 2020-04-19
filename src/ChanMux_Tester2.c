@@ -1,11 +1,11 @@
-#include <stdio.h>
-#include "LibDebug/Debug.h"
-#include "camkes.h"
-#include "system_config.h"
-#include "ChanMux_Tester_Common.h"
-#include "SeosError.h"
 
+#include "system_config.h"
+#include "LibDebug/Debug.h"
+#include "SeosError.h"
+#include "ChanMux_Tester_Common.h"
 #include "camkes.h"
+#include <stdio.h>
+
 
 int run()
 {

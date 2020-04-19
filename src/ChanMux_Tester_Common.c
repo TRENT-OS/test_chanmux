@@ -1,10 +1,10 @@
 /* Includes ------------------------------------------------------------------*/
-#include <string.h>
-#include <stdio.h>
 #include "system_config.h"
+#include "LibDebug/Debug.h"
 #include "ChanMux/ChanMuxClient.h"
 #include "camkes.h"
-#include "LibDebug/Debug.h"
+#include <string.h>
+#include <stdio.h>
 
 #define CMD_TEST_OVERFLOW       0
 #define CMD_TEST_FULL_DUPLEX    1
