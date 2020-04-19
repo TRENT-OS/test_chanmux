@@ -7,17 +7,23 @@ component ChanMux {
     // generic upper interface
     provides  ChanMuxDriverInf    ChanMuxRpc;
 
+
     //-------------------------------------------------
     // upper interface to ChanMux_Tester1
-    dataport  Buf                 tester1RDataPort;
-    dataport  Buf                 tester1WDataPort;
-    emits     DataAvailableEvent  dataAvailableMain;
+    dataport  Buf                 tester1_dataPort_read;
+    dataport  Buf                 tester1_dataPort_write;
+
 
     //-------------------------------------------------
     // upper interface to ChanMux_Tester2
-    dataport  Buf                 tester2RDataPort;
-    dataport  Buf                 tester2WDataPort;
-    // also uses dataAvailableMain
+    dataport  Buf                 tester2_dataPort_read;
+    dataport  Buf                 tester2_dataPort_write;
+
+
+    //-------------------------------------------------
+    // shared by ChanMux_Tester1 and ChanMux_Tester2
+    emits     DataAvailableEvent  tester_dataAvailable;
+
 
     //-------------------------------------------------
     // lower interface to UART

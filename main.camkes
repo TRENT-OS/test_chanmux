@@ -7,32 +7,37 @@ import "components/Uart/Uart.camkes";
 
 assembly {
     composition {
-        component   ChanMux_Tester1     tester1;
-        component   ChanMux_Tester2     tester2;
-        component   ChanMux             chanMux;
+
+        // UART
         component   UartDev             uartDev;
         component   UartDrv             uartDrv;
+        connection  seL4HardwareMMIO    uart_memio          (from uartDrv.uartRegBase, to uartDev.uartRegBase);
 
-        connection  seL4RPCCall         tester1_chanmux     (from tester1.ChanMuxRpc, to chanMux.ChanMuxRpc);
-        connection  seL4RPCCall         tester2_chanmux     (from tester2.ChanMuxRpc, to chanMux.ChanMuxRpc);
-        connection  seL4RPCCall         tester1_txstream    (from tester1.ChanMuxTestExt, to tester2.ChanMuxTest);
-        connection  seL4RPCCall         tester2_txstream    (from tester2.ChanMuxTestExt, to tester1.ChanMuxTest);
-
+        // ChanMux
+        component   ChanMux             chanMux;
         connection  seL4RPCCall         chanmux_uart        (from chanMux.Output, to uartDrv.UartDrv);
         connection  seL4RPCCall         uart_chanmux        (from uartDrv.Output, to chanMux.ChanMuxOut);
 
         connection  seL4SharedData      uart_dataConnection (from chanMux.outputDataPort, to uartDrv.inputDataPort);
-        connection  seL4SharedData      dataConnection1R    (from tester1.chanMuxRDataPort, to chanMux.tester1RDataPort);
-        connection  seL4SharedData      dataConnection1W    (from tester1.chanMuxWDataPort, to chanMux.tester1WDataPort);
-        connection  seL4SharedData      dataConnection2R    (from tester2.chanMuxRDataPort, to chanMux.tester2RDataPort);
-        connection  seL4SharedData      dataConnection2W    (from tester2.chanMuxWDataPort, to chanMux.tester2WDataPort);
 
-        connection  seL4Notification    dataAvailableLan        (from chanMux.dataAvailableMain, to tester1.ChanMuxSignal_dataAvailable);
-        connection  seL4Notification    dataAvailableLan2       (from chanMux.dataAvailableMain, to tester2.ChanMuxSignal_dataAvailable);
-        connection  seL4Notification    tester1Ready4FullDuplex (from tester1.ready, to tester2.tester1Ready);
-        connection  seL4Notification    tester2Ready4FullDuplex (from tester2.ready, to tester1.tester2Ready);
+        // ChanMux_Tester1
+        component   ChanMux_Tester1     tester1;
+        connection  seL4RPCCall         tester1_chanmuxRpc       (from tester1.ChanMuxRpc, to chanMux.ChanMuxRpc);
+        connection  seL4SharedData      tester1_chanmux_read     (from tester1.chanMuxRDataPort, to chanMux.tester1_dataPort_read);
+        connection  seL4SharedData      tester1_chanmux_write    (from tester1.chanMuxWDataPort, to chanMux.tester1_dataPort_write);
+        connection  seL4Notification    tester1_chanmux_hasData  (from chanMux.tester_dataAvailable, to tester1.ChanMuxSignal_dataAvailable);
+        connection  seL4RPCCall         tester1_txstream         (from tester1.ChanMuxTestExt, to tester2.ChanMuxTest);
+        connection  seL4Notification    tester1Ready4FullDuplex  (from tester1.ready, to tester2.tester1Ready);
 
-        connection  seL4HardwareMMIO    uart_memio          (from uartDrv.uartRegBase, to uartDev.uartRegBase);
+        // ChanMux_Tester2
+        component   ChanMux_Tester2     tester2;
+        connection  seL4RPCCall         tester2_chanmuxRpc       (from tester2.ChanMuxRpc, to chanMux.ChanMuxRpc);
+        connection  seL4SharedData      tester2_chanmux_read     (from tester2.chanMuxRDataPort, to chanMux.tester2_dataPort_read);
+        connection  seL4SharedData      tester2_chanmux_write    (from tester2.chanMuxWDataPort, to chanMux.tester2_dataPort_write);
+        connection  seL4Notification    tester2_chanmux_hasData  (from chanMux.tester_dataAvailable, to tester2.ChanMuxSignal_dataAvailable);
+        connection  seL4RPCCall         tester2_txstream         (from tester2.ChanMuxTestExt, to tester1.ChanMuxTest);
+        connection  seL4Notification    tester2Ready4FullDuplex  (from tester2.ready, to tester1.tester2Ready);
+
     }
     configuration {
         uartDev.uartRegBase_paddr  = 0xE0000000;

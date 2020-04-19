@@ -97,11 +97,11 @@ static const ChannelDataport_t wDataports[CHANMUX_NUM_CHANNELS] =
     { 0 }, // 8
     { 0 }, // 9
     { // 10
-        .io  = (void**) &tester1WDataPort,
+        .io  = (void**) &tester1_dataPort_write,
         .len = PAGE_SIZE
     },
     { // 11
-        .io  = (void**) &tester2WDataPort,
+        .io  = (void**) &tester2_dataPort_write,
         .len = PAGE_SIZE
     }
 };
@@ -119,11 +119,11 @@ static const ChannelDataport_t rDataports[CHANMUX_NUM_CHANNELS] =
     { 0 }, // 8
     { 0 }, // 9
     { // 10
-        .io  = (void**) &tester1RDataPort,
+        .io  = (void**) &tester1_dataPort_read,
         .len = PAGE_SIZE
     },
     { // 11
-        .io  = (void**) &tester2RDataPort,
+        .io  = (void**) &tester2_dataPort_read,
         .len = PAGE_SIZE
     }
 };
@@ -145,7 +145,7 @@ ChanMux_dataAvailable_emit(unsigned int chanNum)
     {
     case CHANNEL_TEST_1:
     case CHANNEL_TEST_2:
-        dataAvailableMain_emit();
+        tester_dataAvailable_emit();
         break;
     default:
         Debug_LOG_ERROR("%s(): invalid channel %u", __func__, chanNum);
