@@ -144,8 +144,10 @@ ChanMux_dataAvailable_emit(unsigned int chanNum)
     switch (chanNum)
     {
     case CHANNEL_TEST_1:
+        tester1_event_hasData_emit();
+        break;
     case CHANNEL_TEST_2:
-        tester_dataAvailable_emit();
+        tester2_event_hasData_emit();
         break;
     default:
         Debug_LOG_ERROR("%s(): invalid channel %u", __func__, chanNum);
