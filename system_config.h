@@ -1,7 +1,8 @@
 /**
- * Copyright (C) 2019, Hensoldt Cyber GmbH
  *
- * SEOS libraries configurations
+ * ChanMux Test Configuration
+ *
+ * Copyright (C) 2019, Hensoldt Cyber GmbH
  *
  */
 #pragma once
