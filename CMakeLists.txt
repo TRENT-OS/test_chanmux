@@ -49,19 +49,12 @@ DeclareCAmkESComponent(UartDrv
         -Wall -Werror
 )
 
-DeclareCAmkESComponent(ChanMux
-    SOURCES
-        components/ChanMux/src/ChanMux.c
-    C_FLAGS
-        -Wall -Werror
-    LIBS
-        system_config
-        seos_core_api
-        seos_libs
-        chanmux_server
+DeclareCAmkESComponent_ChanMux(
+    ChanMux
+    components/ChanMux/ChanMux_config.c
+    system_config
 )
 
 #ROOT SERVER
-DeclareCAmkESRootserver(main.camkes)
-GenerateCAmkESRootServer()
+DeclareAndCreateCamkESSystem(main.camkes)
 GenerateSimulateScript()

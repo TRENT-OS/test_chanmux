@@ -33,30 +33,25 @@
 
 
 //-----------------------------------------------------------------------------
-// ChanMUX/Proxy channels
+// ChanMux channels
 //-----------------------------------------------------------------------------
 
-enum
-{
-    CHANNEL_UNUSED_0,
-    CHANNEL_UNUSED_1,
-    CHANNEL_UNUSED_2,
-    CHANNEL_UNUSED_3,
-    CHANNEL_UNUSED_4,
-    CHANNEL_UNUSED_5,
-    CHANNEL_UNUSED_6,
-    CHANNEL_UNUSED_7,
-    CHANNEL_UNUSED_8,
-    CHANNEL_UNUSED_9,
-    CHANNEL_TEST_1,          // 10
-    CHANNEL_TEST_2,          // 11
-    CHANMUX_NUM_CHANNELS,    // 12
-};
+#define CHANMUX_CHANNEL_TEST_1          10
+#define CHANMUX_CHANNEL_TEST_2          11
 
 
 //-----------------------------------------------------------------------------
-// ChanMUX cients
+// ChanMux clients
 //-----------------------------------------------------------------------------
+
+#define CHANMUX_ID_TESTER_1        101
+#define CHANMUX_ID_TESTER_2        102
+
+
+//-----------------------------------------------------------------------------
+// ChanMux Test FIFO
+//-----------------------------------------------------------------------------
+
 // Make each FIFO small enough that the Proxy can overflow it easily with a
 // single packet
 #define CHANMUX_TEST_FIFO_SIZE   (PAGE_SIZE / 2)

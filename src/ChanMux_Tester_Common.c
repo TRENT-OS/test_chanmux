@@ -1,7 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
-#include "system_config.h"
 #include "LibDebug/Debug.h"
-#include "ChanMux/ChanMuxClient.h"
+#include "ChanMuxNvmDriver.h"
 #include "camkes.h"
 #include <string.h>
 #include <stdio.h>
@@ -14,6 +13,15 @@
 #define FULL_DUPLEX_BLOCK_SIZE      (CHANMUX_TEST_FIFO_SIZE / 2)
 
 /* Instance variables ---------------------------------------------------------*/
+
+static const ChanMuxClientConfig_t chanMuxClientConfig = {
+    .port   = CHANMUX_DATAPORT_DUPLEX_ASSIGN(
+                    chanMux_port_read,
+                    chanMux_port_write ),
+    .wait   = chanMux_event_hasData_wait,
+    .write  = chanMux_rpc_write,
+    .read   = chanMux_rpc_read
+};
 
 static ChanMuxClient testChanMuxClient;
 
@@ -111,12 +119,11 @@ exit:
 
 
 seos_err_t
-ChanMuxTest_init(unsigned int chan)
+ChanMuxTest_init(void)
 {
-    bool isSuccess = ChanMuxClient_ctor(&testChanMuxClient,
-                                        chan,
-                                        chanMuxRDataPort,
-                                        chanMuxWDataPort);
+    bool isSuccess = ChanMuxClient_ctor(
+                        &testChanMuxClient,
+                        &chanMuxClientConfig);
     if (!isSuccess)
     {
         Debug_LOG_ERROR("Failed to construct testChanMuxClient!");
@@ -197,8 +204,8 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     }
     // test buffer overlap
     else if (ChanMuxClient_read(&testChanMuxClient,
-                                testChanMuxClient.readDataport,
-                                PAGE_SIZE + 1,
+                                *testChanMuxClient.config->port.read.io,
+                                testChanMuxClient.config->port.read.len + 1,
                                 &len)
             != SEOS_ERROR_INVALID_PARAMETER)
     {

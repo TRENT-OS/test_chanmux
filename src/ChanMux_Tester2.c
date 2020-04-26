@@ -9,12 +9,12 @@
 
 int run()
 {
-    seos_err_t retval = ChanMuxTest_init(CHANNEL_TEST_2);
+    seos_err_t retval = ChanMuxTest_init();
 
     if (retval != SEOS_SUCCESS)
     {
-        Debug_LOG_ERROR("%s(): channel %d: Error initializing ChanMuxTest! Error code:%d",
-                        __func__, CHANNEL_TEST_2, retval);
+        Debug_LOG_ERROR("%s(): (tester 2) error initializing ChanMuxTest, code: %d",
+                        __func__, retval);
         return retval;
     }
 

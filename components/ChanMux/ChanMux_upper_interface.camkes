@@ -1,0 +1,23 @@
+/*
+ *  ChanMUX upper interfaces
+ *
+ *  Copyright (C) 2020, Hensoldt Cyber GmbH
+ *
+ *
+ *  The file components/ChanMux/ChanMux.camkes from the generic ChanMux CAmkES
+ *  component will include this
+ *
+ */
+
+//-------------------------------------------------
+// upper interface to ChanMux_Tester1
+dataport  Buf                 tester1_port_read;
+dataport  Buf                 tester1_port_write;
+emits     DataAvailableEvent  tester1_event_hasData;
+
+
+//-------------------------------------------------
+// upper interface to ChanMux_Tester2
+dataport  Buf                 tester2_port_read;
+dataport  Buf                 tester2_port_write;
+emits     DataAvailableEvent  tester2_event_hasData;

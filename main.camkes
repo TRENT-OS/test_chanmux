@@ -8,8 +8,14 @@ import <std_connector.camkes>;
 
 import "components/ChanMux_Tester1/ChanMux_Tester1.camkes";
 import "components/ChanMux_Tester2/ChanMux_Tester2.camkes";
-import "components/ChanMux/ChanMux.camkes";
 import "components/Uart/Uart.camkes";
+
+#include "system_config.h"
+
+#define CHANMUX_COMPONENT_NAME  ChanMux
+#define CHANMUX_UPPER_INTERFACES "components/ChanMux/ChanMux_upper_interface.camkes"
+#include "ChanMux/ChanMux.camkes"
+
 
 assembly {
     composition {
@@ -20,27 +26,26 @@ assembly {
         connection  seL4HardwareMMIO    uart_memio          (from uartDrv.uartRegBase, to uartDev.uartRegBase);
 
         // ChanMux
-        component   ChanMux             chanMux;
-        connection  seL4RPCCall         chanmux_uart        (from chanMux.Output, to uartDrv.UartDrv);
-        connection  seL4RPCCall         uart_chanmux        (from uartDrv.Output, to chanMux.ChanMuxOut);
-
-        connection  seL4SharedData      uart_dataConnection (from chanMux.outputDataPort, to uartDrv.inputDataPort);
+        DECLARE_AND_CONNECT_INSTANCE_CHANMUX(
+            ChanMux, chanMux,
+            uartDrv.UartDrv, uartDrv.inputDataPort,
+            uartDrv.Output)
 
         // ChanMux_Tester1
         component   ChanMux_Tester1     tester1;
-        connection  seL4RPCCall         tester1_chanmuxRpc       (from tester1.ChanMuxRpc, to chanMux.ChanMuxRpc);
-        connection  seL4SharedData      tester1_chanmux_read     (from tester1.chanMuxRDataPort, to chanMux.tester1_dataPort_read);
-        connection  seL4SharedData      tester1_chanmux_write    (from tester1.chanMuxWDataPort, to chanMux.tester1_dataPort_write);
-        connection  seL4Notification    tester1_chanmux_hasData  (from chanMux.tester1_event_hasData, to tester1.ChanMuxSignal_dataAvailable);
+        connection  seL4RPCCall         tester1_chanmuxRpc       (from tester1.chanMux_rpc, to chanMux.chanMux_rpc);
+        connection  seL4SharedData      tester1_chanmux_read     (from tester1.chanMux_port_read, to chanMux.tester1_port_read);
+        connection  seL4SharedData      tester1_chanmux_write    (from tester1.chanMux_port_write, to chanMux.tester1_port_write);
+        connection  seL4Notification    tester1_chanmux_hasData  (from chanMux.tester1_event_hasData, to tester1.chanMux_event_hasData);
         connection  seL4RPCCall         tester1_txstream         (from tester1.ChanMuxTestExt, to tester2.ChanMuxTest);
         connection  seL4Notification    tester1Ready4FullDuplex  (from tester1.ready, to tester2.tester1Ready);
 
         // ChanMux_Tester2
         component   ChanMux_Tester2     tester2;
-        connection  seL4RPCCall         tester2_chanmuxRpc       (from tester2.ChanMuxRpc, to chanMux.ChanMuxRpc);
-        connection  seL4SharedData      tester2_chanmux_read     (from tester2.chanMuxRDataPort, to chanMux.tester2_dataPort_read);
-        connection  seL4SharedData      tester2_chanmux_write    (from tester2.chanMuxWDataPort, to chanMux.tester2_dataPort_write);
-        connection  seL4Notification    tester2_chanmux_hasData  (from chanMux.tester2_event_hasData, to tester2.ChanMuxSignal_dataAvailable);
+        connection  seL4RPCCall         tester2_chanmuxRpc       (from tester2.chanMux_rpc, to chanMux.chanMux_rpc);
+        connection  seL4SharedData      tester2_chanmux_read     (from tester2.chanMux_port_read, to chanMux.tester2_port_read);
+        connection  seL4SharedData      tester2_chanmux_write    (from tester2.chanMux_port_write, to chanMux.tester2_port_write);
+        connection  seL4Notification    tester2_chanmux_hasData  (from chanMux.tester2_event_hasData, to tester2.chanMux_event_hasData);
         connection  seL4RPCCall         tester2_txstream         (from tester2.ChanMuxTestExt, to tester1.ChanMuxTest);
         connection  seL4Notification    tester2Ready4FullDuplex  (from tester2.ready, to tester1.tester2Ready);
 
@@ -53,7 +58,7 @@ assembly {
 
         // assign endpoint badges for n:1 RPC interface of ChanMUX. The generic
         // naming scheme is <component>.<interface>_attributes = <badge ID>
-        // ChanMux_Tester1.ChanMuxRpc_attributes = 1;
-        // ChanMux_Tester2.ChanMuxRpc_attributes = 2;
+        tester1.chanMux_rpc_attributes = CHANMUX_ID_TESTER_1;
+        tester2.chanMux_rpc_attributes = CHANMUX_ID_TESTER_2;
     }
 }

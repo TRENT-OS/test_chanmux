@@ -17,7 +17,7 @@
  *
  */
 seos_err_t
-ChanMuxTest_init(unsigned chan);
+ChanMuxTest_init(void);
 
 /**
  * @brief Performs tests on parameters and return codes
