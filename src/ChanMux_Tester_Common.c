@@ -367,7 +367,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
                 }
                 else
                 {
-                    Debug_LOG_ERROR("%s: FAIL (tester %u), data received mismatches the expected pattern @ byte #%d, expected 0x%02x but received 0x%02x",
+                    Debug_LOG_ERROR("%s: FAIL (tester %u), data received mismatches the expected pattern @ byte #%zu, expected 0x%02zx but received 0x%02x",
                                     __func__,
                                     tester,
                                     amount + i,
