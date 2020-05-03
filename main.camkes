@@ -8,9 +8,11 @@ import <std_connector.camkes>;
 
 import "components/ChanMux_Tester1/ChanMux_Tester1.camkes";
 import "components/ChanMux_Tester2/ChanMux_Tester2.camkes";
-import "components/Uart/Uart.camkes";
 
 #include "system_config.h"
+
+#include "UART/uart.camkes"
+DECLARE_COMPONENT_UART(UART)
 
 #define CHANMUX_COMPONENT_NAME  ChanMux
 #define CHANMUX_UPPER_INTERFACES "components/ChanMux/ChanMux_upper_interface.camkes"
@@ -21,9 +23,8 @@ assembly {
     composition {
 
         // UART
-        component   UartDev             uartDev;
-        component   UartDrv             uartDrv;
-        connection  seL4HardwareMMIO    uart_memio          (from uartDrv.uartRegBase, to uartDev.uartRegBase);
+        DECLARE_AND_CONNECT_INSTANCE_UART(
+            UART, uartDrv)
 
         // ChanMux
         DECLARE_AND_CONNECT_INSTANCE_CHANMUX(
@@ -51,10 +52,7 @@ assembly {
 
     }
     configuration {
-        uartDev.uartRegBase_paddr  = 0xE0000000;
-        uartDev.uartRegBase_size   = 0x1000;
-
-        uartDrv.inputDataPort       = "R";
+        CONFIGURE_INSTANCE_UART(uartDrv, 0xE0000000, 59)
 
         // assign endpoint badges for n:1 RPC interface of ChanMUX. The generic
         // naming scheme is <component>.<interface>_attributes = <badge ID>
