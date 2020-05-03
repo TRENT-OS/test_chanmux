@@ -4,14 +4,14 @@ import "../../interfaces/ChanMuxTestInf.camkes";
 component ChanMux_Tester1 {
     control;
 
-    dataport    Buf                 chanMuxWDataPort;
-    dataport    Buf                 chanMuxRDataPort;
-
-    uses        ChanMuxDriverInf    ChanMuxRpc;
-    provides    ChanMuxTestInf      ChanMuxTest;
-    uses        ChanMuxTestInf      ChanMuxTestExt;
-
+    uses        ChanMuxDriverInf        ChanMuxRpc;
+    dataport    Buf                     chanMuxWDataPort;
+    dataport    Buf                     chanMuxRDataPort;
     consumes    DataAvailableEvent      ChanMuxSignal_dataAvailable;
+
+    provides    ChanMuxTestInf          ChanMuxTest;
+    uses        ChanMuxTestInf          ChanMuxTestExt;
+
     emits       Ready4FullDuplexEvent   ready;
     consumes    Ready4FullDuplexEvent   tester2Ready;
 }
