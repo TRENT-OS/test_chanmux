@@ -1,3 +1,9 @@
+/*
+ *  ChanMux Test System
+ *
+ *  Copyright (C) 2019-2020, Hensoldt Cyber GmbH
+ */
+
 import <std_connector.camkes>;
 
 import "components/ChanMux_Tester1/ChanMux_Tester1.camkes";
