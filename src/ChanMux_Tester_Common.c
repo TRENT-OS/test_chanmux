@@ -1,6 +1,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "LibDebug/Debug.h"
 #include "ChanMuxNvmDriver.h"
+#include "LibUtil/BitConverter.h"
 #include "camkes.h"
 #include <string.h>
 #include <stdio.h>
@@ -25,21 +26,6 @@ static const ChanMuxClientConfig_t chanMuxClientConfig = {
 
 static ChanMuxClient testChanMuxClient;
 
-static void
-cpyIntToBuf(uint32_t integer, char* buf)
-{
-    buf[0] = (integer >> 24) & 0xFF;
-    buf[1] = (integer >> 16) & 0xFF;
-    buf[2] = (integer >> 8) & 0xFF;
-    buf[3] = integer & 0xFF;
-}
-
-static size_t
-cpyBufToInt(const char* buf)
-{
-    return (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | (buf[3]);
-}
-
 static seos_err_t
 testMaxSize(unsigned int tester, size_t len)
 {
@@ -53,7 +39,7 @@ testMaxSize(unsigned int tester, size_t len)
     size_t patternLen           = len - sizeof(testCmd);
 
     // compose the command with the payload inside
-    cpyIntToBuf(patternLen, &testCmd[1]);
+    BitConverter_putUint32BE((uint32_t) patternLen, &testCmd[1]);
 
     memcpy(dataBuf, testCmd, sizeof(testCmd));
     for (unsigned int j = 0; j < patternLen; j++)
@@ -92,7 +78,7 @@ testMaxSize(unsigned int tester, size_t len)
         goto exit;
     }
 
-    size_t numMatches       = cpyBufToInt(dataBuf);
+    size_t numMatches       = BitConverter_getUint32BE(dataBuf);
     size_t expextedMatches  = len > ChanMuxClient_MTU ?
         maxPatterLen : patternLen;
     if (numMatches != expextedMatches)
@@ -299,7 +285,7 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
     static char dataBuf[PAGE_SIZE];
 
     // compose the command with the payload inside
-    cpyIntToBuf(FULL_DUPLEX_BLOCK_SIZE, &testCmd[1]);
+    BitConverter_putUint32BE(FULL_DUPLEX_BLOCK_SIZE, &testCmd[1]);
     memcpy(dataBuf, testCmd, sizeof(testCmd));
     for (unsigned int j = 0; j < FULL_DUPLEX_BLOCK_SIZE; j++)
     {
