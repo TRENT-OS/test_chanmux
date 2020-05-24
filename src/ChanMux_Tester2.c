@@ -1,3 +1,8 @@
+/*
+ *  Channel Tester 2
+ *
+ *  Copyright (C) 2019-2020, Hensoldt Cyber GmbH
+ */
 
 #include "system_config.h"
 #include "LibDebug/Debug.h"
