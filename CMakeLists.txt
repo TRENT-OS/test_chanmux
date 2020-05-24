@@ -28,7 +28,6 @@ DeclareCAmkESComponent(ChanMux_Tester1
     C_FLAGS
         -Wall -Werror
     LIBS
-        system_config
         seos_core_api
         seos_libs
         chanmux_client
@@ -41,7 +40,6 @@ DeclareCAmkESComponent(ChanMux_Tester2
     C_FLAGS
         -Wall -Werror
     LIBS
-        system_config
         seos_core_api
         seos_libs
         chanmux_client

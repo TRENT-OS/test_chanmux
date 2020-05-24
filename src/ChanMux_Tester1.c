@@ -4,7 +4,6 @@
  *  Copyright (C) 2019-2020, Hensoldt Cyber GmbH
  */
 
-#include "system_config.h"
 #include "LibDebug/Debug.h"
 #include "SeosError.h"
 #include "ChanMux_Tester_Common.h"
