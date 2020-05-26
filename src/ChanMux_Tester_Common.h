@@ -7,7 +7,7 @@
 #pragma once
 
 #include <stddef.h>
-#include "SeosError.h"
+#include "OS_Error.h"
 
 /* Exported functions ------------------------------------------------------- */
 
@@ -16,13 +16,13 @@
  * channel to the defined dataport
  *
  */
-seos_err_t
+OS_Error_t
 ChanMuxTest_init(void);
 
 /**
  * @brief Performs tests on parameters and return codes
  */
-seos_err_t
+OS_Error_t
 ChanMuxTest_testReturnCodes(unsigned int tester);
 
 /**
@@ -33,7 +33,7 @@ ChanMuxTest_testReturnCodes(unsigned int tester);
  * @param tester an ID that identifies the thread running the function (used
  * in printouts)
 */
-seos_err_t
+OS_Error_t
 ChanMuxTest_testOverflow(unsigned int tester);
 
 /**
@@ -47,7 +47,7 @@ ChanMuxTest_testOverflow(unsigned int tester);
  * @param tester an ID that identifies the thread running the function (used
  * in printouts)
  */
-seos_err_t
+OS_Error_t
 ChanMuxTest_testFullDuplexTxStream(unsigned int tester);
 
 /**
@@ -59,7 +59,7 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester);
  * @param tester an ID that identifies the thread running the function (used
  * in printouts)
  */
-seos_err_t
+OS_Error_t
 ChanMuxTest_testFullDuplex(unsigned int tester);
 
 /**
@@ -73,5 +73,5 @@ ChanMuxTest_testFullDuplex(unsigned int tester);
  * @param tester an ID that identifies the thread running the function (used
  * in printouts)
  */
-seos_err_t
+OS_Error_t
 ChanMuxTest_testMaxSize(unsigned int tester);

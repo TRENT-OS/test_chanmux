@@ -5,7 +5,7 @@
  */
 
 #include "LibDebug/Debug.h"
-#include "SeosError.h"
+#include "OS_Error.h"
 #include "ChanMux_Tester_Common.h"
 #include "camkes.h"
 #include <stdio.h>
@@ -13,7 +13,7 @@
 
 int run()
 {
-    seos_err_t retval = ChanMuxTest_init();
+    OS_Error_t retval = ChanMuxTest_init();
 
     if (retval != SEOS_SUCCESS)
     {

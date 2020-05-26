@@ -26,11 +26,11 @@ static const ChanMuxClientConfig_t chanMuxClientConfig = {
 
 static ChanMuxClient testChanMuxClient;
 
-static seos_err_t
+static OS_Error_t
 testMaxSize(unsigned int tester, size_t len)
 {
-    seos_err_t retval   = SEOS_ERROR_GENERIC;
-    seos_err_t err      = SEOS_ERROR_GENERIC;
+    OS_Error_t retval   = SEOS_ERROR_GENERIC;
+    OS_Error_t err      = SEOS_ERROR_GENERIC;
 
     // PAGE_SIZE is the size of the dataport to the ChanMux
     static char dataBuf[PAGE_SIZE];
@@ -104,7 +104,7 @@ exit:
 }
 
 
-seos_err_t
+OS_Error_t
 ChanMuxTest_init(void)
 {
     bool isSuccess = ChanMuxClient_ctor(
@@ -118,11 +118,11 @@ ChanMuxTest_init(void)
     return 0;
 }
 
-seos_err_t
+OS_Error_t
 ChanMuxTest_testReturnCodes(unsigned int tester)
 {
     static char dataBuf[PAGE_SIZE];
-    seos_err_t retval = SEOS_ERROR_GENERIC;
+    OS_Error_t retval = SEOS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
 
     /* the following code structure may look strange because od the repetition
@@ -206,17 +206,17 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     return retval;
 }
 
-seos_err_t
+OS_Error_t
 ChanMuxTest_testOverflow(unsigned int tester)
 {
     static char dataBuf[PAGE_SIZE];
-    seos_err_t retval = SEOS_ERROR_GENERIC;
+    OS_Error_t retval = SEOS_ERROR_GENERIC;
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
     Debug_LOG_DEBUG("%s: (tester %u) sending command to trigger overflow condition...",
                     __func__, tester);
-    seos_err_t err = ChanMuxClient_write(&testChanMuxClient,
+    OS_Error_t err = ChanMuxClient_write(&testChanMuxClient,
                                          testCmd,
                                          len,
                                          &len);
@@ -272,13 +272,13 @@ exit:
 // This routine will be shared to the other test thread via an inteface so that
 // we will have a thread (the one running the interface) making Tx streaming
 // while the other is doing Rx streaming
-seos_err_t
+OS_Error_t
 ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
 {
-    seos_err_t retval       = SEOS_ERROR_GENERIC;
+    OS_Error_t retval       = SEOS_ERROR_GENERIC;
     char testCmd[5]         = { CMD_TEST_FULL_DUPLEX };
     size_t len              = 0;
-    seos_err_t err          = SEOS_ERROR_GENERIC;
+    OS_Error_t err          = SEOS_ERROR_GENERIC;
 
     // this variable must be local to the funtion as this function is exposed as
     // camkes interface function;
@@ -314,11 +314,11 @@ exit:
     return retval;
 }
 
-seos_err_t
+OS_Error_t
 ChanMuxTest_testFullDuplex(unsigned int tester)
 {
-    seos_err_t retval   = SEOS_ERROR_GENERIC;
-    seos_err_t err      = SEOS_ERROR_GENERIC;
+    OS_Error_t retval   = SEOS_ERROR_GENERIC;
+    OS_Error_t err      = SEOS_ERROR_GENERIC;
     size_t len          = 0;
     size_t amount       = 0;
 
@@ -389,10 +389,10 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
     return retval;
 }
 
-seos_err_t
+OS_Error_t
 ChanMuxTest_testMaxSize(unsigned int tester)
 {
-    seos_err_t retval = testMaxSize(tester, ChanMuxClient_MTU - 1);
+    OS_Error_t retval = testMaxSize(tester, ChanMuxClient_MTU - 1);
 
     if (SEOS_SUCCESS == retval)
     {
