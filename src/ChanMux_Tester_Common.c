@@ -29,8 +29,8 @@ static ChanMuxClient testChanMuxClient;
 static OS_Error_t
 testMaxSize(unsigned int tester, size_t len)
 {
-    OS_Error_t retval   = SEOS_ERROR_GENERIC;
-    OS_Error_t err      = SEOS_ERROR_GENERIC;
+    OS_Error_t retval   = OS_ERROR_GENERIC;
+    OS_Error_t err      = OS_ERROR_GENERIC;
 
     // PAGE_SIZE is the size of the dataport to the ChanMux
     static char dataBuf[PAGE_SIZE];
@@ -51,7 +51,7 @@ testMaxSize(unsigned int tester, size_t len)
     Debug_LOG_DEBUG("%s: (tester %u) sending command sized (%zu), ChanMux MTU is %d ...",
                     __func__, tester, len, ChanMuxClient_MTU);
     err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &lenWritten);
-    if (SEOS_SUCCESS != err)
+    if (OS_SUCCESS != err)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u) got error %d when trying to send a request to proxy",
                         __func__, tester, err);
@@ -68,7 +68,7 @@ testMaxSize(unsigned int tester, size_t len)
                              dataBuf,
                              sizeof(uint32_t),
                              &lenRead);
-    if (SEOS_SUCCESS != err)
+    if (OS_SUCCESS != err)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
                         __func__,
@@ -98,7 +98,7 @@ testMaxSize(unsigned int tester, size_t len)
                         numMatches,
                         expextedMatches);
     }
-    retval = SEOS_SUCCESS;
+    retval = OS_SUCCESS;
 exit:
     return retval;
 }
@@ -122,7 +122,7 @@ OS_Error_t
 ChanMuxTest_testReturnCodes(unsigned int tester)
 {
     static char dataBuf[PAGE_SIZE];
-    OS_Error_t retval = SEOS_ERROR_GENERIC;
+    OS_Error_t retval = OS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
 
     /* the following code structure may look strange because od the repetition
@@ -130,13 +130,13 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
      based on where they are places will print out __FILE__ and __LINE__ too */
     // TEST ChanMuxClient_write()
     if (ChanMuxClient_write(&testChanMuxClient, NULL, len, &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, len, NULL)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
@@ -145,19 +145,19 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
                                  dataBuf,
                                  PAGE_SIZE + 1,
                                  &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient, NULL, len, &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, len, NULL)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
@@ -165,25 +165,25 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     else if (ChanMuxClient_readAsync(&testChanMuxClient,
                                      dataBuf, PAGE_SIZE + 1,
                                      &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, NULL, len, &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, len, NULL)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
     }
     else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
@@ -193,7 +193,7 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
                                 *testChanMuxClient.config->port.read.io,
                                 testChanMuxClient.config->port.read.len + 1,
                                 &len)
-            != SEOS_ERROR_INVALID_PARAMETER)
+            != OS_ERROR_INVALID_PARAMETER)
     {
         Debug_LOG_ERROR("%s: FAIL (tester %u)",
                         __func__, tester);
@@ -201,7 +201,7 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     else
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
-        retval = SEOS_SUCCESS;
+        retval = OS_SUCCESS;
     }
     return retval;
 }
@@ -210,7 +210,7 @@ OS_Error_t
 ChanMuxTest_testOverflow(unsigned int tester)
 {
     static char dataBuf[PAGE_SIZE];
-    OS_Error_t retval = SEOS_ERROR_GENERIC;
+    OS_Error_t retval = OS_ERROR_GENERIC;
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
@@ -220,7 +220,7 @@ ChanMuxTest_testOverflow(unsigned int tester)
                                          testCmd,
                                          len,
                                          &len);
-    if (SEOS_SUCCESS != err)
+    if (OS_SUCCESS != err)
     {
         Debug_LOG_ERROR("%s: (tester %u) failed trying to send a command, err was %d with %zu bytes written",
                         __func__,
@@ -236,17 +236,17 @@ ChanMuxTest_testOverflow(unsigned int tester)
                              dataBuf,
                              len,
                              &len);
-    if ((SEOS_ERROR_OVERFLOW_DETECTED == err) && (CHANMUX_TEST_FIFO_SIZE == len))
+    if ((OS_ERROR_OVERFLOW_DETECTED == err) && (CHANMUX_TEST_FIFO_SIZE == len))
     {
         len = 0;
         err = ChanMuxClient_readAsync(&testChanMuxClient,
                                       dataBuf,
                                       len,
                                       &len);
-        if ((SEOS_SUCCESS == err))
+        if ((OS_SUCCESS == err))
         {
             Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
-            retval = SEOS_SUCCESS;
+            retval = OS_SUCCESS;
         }
         else
         {
@@ -275,10 +275,10 @@ exit:
 OS_Error_t
 ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
 {
-    OS_Error_t retval       = SEOS_ERROR_GENERIC;
+    OS_Error_t retval       = OS_ERROR_GENERIC;
     char testCmd[5]         = { CMD_TEST_FULL_DUPLEX };
     size_t len              = 0;
-    OS_Error_t err          = SEOS_ERROR_GENERIC;
+    OS_Error_t err          = OS_ERROR_GENERIC;
 
     // this variable must be local to the funtion as this function is exposed as
     // camkes interface function;
@@ -298,16 +298,16 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
                         __func__, tester);
         len = sizeof(testCmd) + FULL_DUPLEX_BLOCK_SIZE;
         err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &len);
-        if (SEOS_SUCCESS != err)
+        if (OS_SUCCESS != err)
         {
             Debug_LOG_ERROR("%s: (tester %u) got error %d when trying to send a request to proxy",
                             __func__, tester, err);
             goto exit;
         }
-        retval = SEOS_SUCCESS;
+        retval = OS_SUCCESS;
     }
 exit:
-    if (SEOS_SUCCESS == retval)
+    if (OS_SUCCESS == retval)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     }
@@ -317,8 +317,8 @@ exit:
 OS_Error_t
 ChanMuxTest_testFullDuplex(unsigned int tester)
 {
-    OS_Error_t retval   = SEOS_ERROR_GENERIC;
-    OS_Error_t err      = SEOS_ERROR_GENERIC;
+    OS_Error_t retval   = OS_ERROR_GENERIC;
+    OS_Error_t err      = OS_ERROR_GENERIC;
     size_t len          = 0;
     size_t amount       = 0;
 
@@ -333,7 +333,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
                                  dataBuf,
                                  len,
                                  &len);
-        if (SEOS_SUCCESS == err)
+        if (OS_SUCCESS == err)
         {
             Debug_LOG_DEBUG("%s: (tester %u) got %zu bytes from ChanMux",
                             __func__, tester, len);
@@ -356,7 +356,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
                 }
                 if (i == len)
                 {
-                    retval = SEOS_SUCCESS;
+                    retval = OS_SUCCESS;
                 }
                 else
                 {
@@ -382,7 +382,7 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
         }
     }
  exit:
-    if (SEOS_SUCCESS == retval)
+    if (OS_SUCCESS == retval)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     }
@@ -394,17 +394,17 @@ ChanMuxTest_testMaxSize(unsigned int tester)
 {
     OS_Error_t retval = testMaxSize(tester, ChanMuxClient_MTU - 1);
 
-    if (SEOS_SUCCESS == retval)
+    if (OS_SUCCESS == retval)
     {
         retval = testMaxSize(tester, ChanMuxClient_MTU);
     }
 
-    if (SEOS_SUCCESS == retval)
+    if (OS_SUCCESS == retval)
     {
         retval = testMaxSize(tester, ChanMuxClient_MTU + 1);
     }
 
-    if (SEOS_SUCCESS == retval)
+    if (OS_SUCCESS == retval)
     {
         Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     }

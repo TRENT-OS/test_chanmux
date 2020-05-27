@@ -15,7 +15,7 @@ int run()
 {
     OS_Error_t retval = ChanMuxTest_init();
 
-    if (retval != SEOS_SUCCESS)
+    if (retval != OS_SUCCESS)
     {
         Debug_LOG_ERROR("%s(): (tester 1) error initializing ChanMuxTest, code: %d",
                         __func__, retval);
