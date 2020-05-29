@@ -1,4 +1,4 @@
-import <seos_if_chanMux.camkes>;
+import <if_ChanMux.camkes>;
 import "../../interfaces/ChanMuxTestInf.camkes";
 
 component ChanMux_Tester2 {
