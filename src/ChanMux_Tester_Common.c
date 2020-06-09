@@ -48,7 +48,7 @@ testMaxSize(unsigned int tester, size_t len)
     }
 
     size_t lenWritten = 0;
-    Debug_LOG_DEBUG("%s: (tester %u) sending command sized (%zu), ChanMux MTU is %d ...",
+    Debug_LOG_DEBUG("%s: (tester %u) sending command sized (%zu), ChanMux MTU is %lu ...",
                     __func__, tester, len, ChanMuxClient_MTU);
     err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &lenWritten);
     if (OS_SUCCESS != err)
