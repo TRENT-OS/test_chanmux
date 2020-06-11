@@ -14,31 +14,37 @@ os_use_libs(
 )
 
 
+#-------------------------------------------------------------------------------
 project(system_config C)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 
+#-------------------------------------------------------------------------------
 project(tests_chanmux C)
 
-DeclareCAmkESComponent(ChanMux_Tester1
+DeclareCAmkESComponent(
+    ChanMux_Tester1
     SOURCES
         src/ChanMux_Tester1.c
         src/ChanMux_Tester_Common.c
     C_FLAGS
-        -Wall -Werror
+        -Wall
+        -Werror
     LIBS
         os_core_api
         os_libs
         chanmux_client
 )
 
-DeclareCAmkESComponent(ChanMux_Tester2
+DeclareCAmkESComponent(
+    ChanMux_Tester2
     SOURCES
         src/ChanMux_Tester2.c
         src/ChanMux_Tester_Common.c
     C_FLAGS
-        -Wall -Werror
+        -Wall
+        -Werror
     LIBS
         os_core_api
         os_libs
