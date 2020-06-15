@@ -190,8 +190,8 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     }
     // test buffer overlap
     else if (ChanMuxClient_read(&testChanMuxClient,
-                                *testChanMuxClient.config->port.read.io,
-                                testChanMuxClient.config->port.read.len + 1,
+                                OS_Dataport_getBuf(testChanMuxClient.config->port.read),
+                                OS_Dataport_getSize(testChanMuxClient.config->port.read) + 1,
                                 &len)
             != OS_ERROR_INVALID_PARAMETER)
     {
