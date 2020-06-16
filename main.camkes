@@ -27,10 +27,7 @@ assembly {
             UART, uartDrv)
 
         // ChanMux
-        DECLARE_AND_CONNECT_INSTANCE_CHANMUX(
-            ChanMux, chanMux,
-            uartDrv.UartDrv, uartDrv.inputDataPort,
-            uartDrv.Output)
+        DECLARE_AND_CONNECT_INSTANCE_CHANMUX_TO_UART(ChanMux, chanMux, uartDrv)
 
         // ChanMux_Tester1
         component   ChanMux_Tester1     tester1;
