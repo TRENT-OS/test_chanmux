@@ -24,6 +24,7 @@ int run()
 
     ChanMuxTest_testReturnCodes(1);
     ChanMuxTest_testOverflow(1);
+    ChanMuxTest_testMaxSize(1);
 
     ready_emit();
     Debug_LOG_DEBUG("%s: (tester 1) waiting signal to run...", __func__);
@@ -32,8 +33,6 @@ int run()
 
     ChanMuxTestExt_testFullDuplexTxStream(2);
     ChanMuxTest_testFullDuplex(1);
-
-    ChanMuxTest_testMaxSize(1);
 
     Debug_LOG_INFO("%s: Done", __func__);
     return 0;
