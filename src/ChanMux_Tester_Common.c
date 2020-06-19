@@ -317,8 +317,6 @@ exit:
 OS_Error_t
 ChanMuxTest_testFullDuplex(unsigned int tester)
 {
-    OS_Error_t retval   = OS_ERROR_GENERIC;
-    OS_Error_t err      = OS_ERROR_GENERIC;
     size_t len          = 0;
     size_t amount       = 0;
 
@@ -329,64 +327,56 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
         len = FULL_DUPLEX_BLOCK_SIZE;
         Debug_LOG_DEBUG("%s: (tester %u) attempting to read %zu bytes from ChanMux...",
                         __func__, tester, len);
-        err = ChanMuxClient_read(&testChanMuxClient,
-                                 dataBuf,
-                                 len,
-                                 &len);
-        if (OS_SUCCESS == err)
+        OS_Error_t err = ChanMuxClient_read(&testChanMuxClient,
+                                            dataBuf,
+                                            len,
+                                            &len);
+        if (OS_SUCCESS != err)
         {
-            Debug_LOG_DEBUG("%s: (tester %u) got %zu bytes from ChanMux",
-                            __func__, tester, len);
-            if (len > 0)
-            {
-                size_t i        = 0;
-                size_t expected = 0;
-
-                while (i < len)
-                {
-                    expected = (i + amount) % 256;
-                    if (dataBuf[i] == expected)
-                    {
-                        i++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                if (i == len)
-                {
-                    retval = OS_SUCCESS;
-                }
-                else
-                {
-                    Debug_LOG_ERROR("%s: FAIL (tester %u), data received mismatches the expected pattern @ byte #%zu, expected 0x%02zx but received 0x%02x",
-                                    __func__,
-                                    tester,
-                                    amount + i,
-                                    expected,
-                                    dataBuf[i]);
-                    goto exit;
-                }
-                amount += len;
-            }
+            Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
+                            __func__, tester, err, len);
+            return err;
+        }
+        else if (0 == len)
+        {
+            Debug_LOG_ERROR("%s: FAIL (tester %u), ChanMuxClient_read() unexpectedly successful although returned len is 0",
+                            __func__, tester);
+            return OS_ERROR_ABORTED;
         }
         else
         {
-            Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
-                            __func__,
-                            tester,
-                            err,
-                            len);
-            goto exit;
+            Debug_LOG_DEBUG("%s: (tester %u) got %zu bytes from ChanMux",
+                        __func__, tester, len);
+            size_t i        = 0;
+            size_t expected = 0;
+
+            while (i < len)
+            {
+                expected = (i + amount) % 256;
+                if (dataBuf[i] == expected)
+                {
+                    i++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (i != len)
+            {
+                Debug_LOG_ERROR("%s: FAIL (tester %u), data received mismatches the expected pattern @ byte #%zu, expected 0x%02zx but received 0x%02x",
+                                __func__,
+                                tester,
+                                amount + i,
+                                expected,
+                                dataBuf[i]);
+                return OS_ERROR_ABORTED;
+            }
+            amount += len;
         }
     }
- exit:
-    if (OS_SUCCESS == retval)
-    {
-        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
-    }
-    return retval;
+    Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
+    return OS_SUCCESS;
 }
 
 OS_Error_t
