@@ -125,7 +125,7 @@ ChanMuxTest_testReturnCodes(unsigned int tester)
     OS_Error_t retval = OS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
 
-    /* the following code structure may look strange because od the repetition
+    /* the following code structure may look strange because of the repetition
      of Debug_LOG_* calls. The reason why we want this is because the macros,
      based on where they are places will print out __FILE__ and __LINE__ too */
     // TEST ChanMuxClient_write()
@@ -269,7 +269,7 @@ exit:
     return retval;
 }
 
-// This routine will be shared to the other test thread via an inteface so that
+// This routine will be shared to the other test thread via an interface so that
 // we will have a thread (the one running the interface) making Tx streaming
 // while the other is doing Rx streaming
 OS_Error_t
@@ -280,7 +280,7 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester)
     size_t len              = 0;
     OS_Error_t err          = OS_ERROR_GENERIC;
 
-    // this variable must be local to the funtion as this function is exposed as
+    // this variable must be local to the function as this function is exposed as
     // camkes interface function;
     static char dataBuf[PAGE_SIZE];
 

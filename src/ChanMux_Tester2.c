@@ -17,7 +17,7 @@ int run()
 
     if (retval != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("%s(): (tester 2) error initializing ChanMuxTest, code: %d",
+        Debug_LOG_ERROR("%s(): (tester 2) error initialising ChanMuxTest, code: %d",
                         __func__, retval);
         return retval;
     }
