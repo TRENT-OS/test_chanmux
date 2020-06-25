@@ -352,7 +352,9 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
 
             while (i < len)
             {
-                expected = (i + amount) % 256;
+                const size_t modulo =
+                    FULL_DUPLEX_BLOCK_SIZE < 256 ? FULL_DUPLEX_BLOCK_SIZE : 256;
+                expected = (i + amount) % modulo;
                 if (dataBuf[i] == expected)
                 {
                     i++;
