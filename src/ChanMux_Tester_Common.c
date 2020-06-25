@@ -10,8 +10,8 @@
 #define CMD_TEST_FULL_DUPLEX    1
 #define CMD_TEST_MAX_SIZE       2
 
-#define ITERATIONS                  20
-#define FULL_DUPLEX_BLOCK_SIZE      (CHANMUX_TEST_FIFO_SIZE / 2)
+#define ITERATIONS                  100
+#define FULL_DUPLEX_BLOCK_SIZE      (CHANMUX_TEST_FIFO_SIZE / ITERATIONS)
 
 /* Instance variables ---------------------------------------------------------*/
 
