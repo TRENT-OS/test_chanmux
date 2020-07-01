@@ -16,12 +16,11 @@
 /* Instance variables ---------------------------------------------------------*/
 
 static const ChanMuxClientConfig_t chanMuxClientConfig = {
-    .port   = CHANMUX_DATAPORT_DUPLEX_ASSIGN(
-                    chanMux_port_read,
-                    chanMux_port_write ),
-    .wait   = chanMux_event_hasData_wait,
-    .write  = chanMux_rpc_write,
-    .read   = chanMux_rpc_read
+    .port   = CHANMUX_DATAPORT_ASSIGN(chanMux_chan_portRead,
+                                      chanMux_chan_portWrite),
+    .wait   = chanMux_chan_EventHasData_wait,
+    .write  = chanMux_Rpc_write,
+    .read   = chanMux_Rpc_read
 };
 
 static ChanMuxClient testChanMuxClient;

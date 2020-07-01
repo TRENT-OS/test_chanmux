@@ -1,13 +1,13 @@
 import <if_ChanMux.camkes>;
 import "../../interfaces/ChanMuxTestInf.camkes";
 
+#include "ChanMux/ChanMuxHelper.camkes"
+
 component ChanMux_Tester1 {
     control;
 
-    uses        ChanMuxDriverInf        chanMux_rpc;
-    dataport    Buf                     chanMux_port_write;
-    dataport    Buf                     chanMux_port_read;
-    consumes    DataAvailableEvent      chanMux_event_hasData;
+    DECLARE_CHANMUX_INTERFACE_USER(chanMux)
+    DECLARE_CHANMUX_CHANNEL_CONNECTOR(chanMux, chan)
 
     provides    ChanMuxTestInf          ChanMuxTest;
     uses        ChanMuxTestInf          ChanMuxTestExt;

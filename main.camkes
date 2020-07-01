@@ -18,7 +18,6 @@ DECLARE_COMPONENT_UART(UART)
 #define CHANMUX_UPPER_INTERFACES "components/ChanMux/ChanMux_upper_interface.camkes"
 #include "ChanMux/ChanMux.camkes"
 
-
 assembly {
     composition {
 
@@ -31,19 +30,15 @@ assembly {
 
         // ChanMux_Tester1
         component   ChanMux_Tester1     tester1;
-        connection  seL4RPCCall         tester1_chanmuxRpc       (from tester1.chanMux_rpc, to chanMux.chanMux_rpc);
-        connection  seL4SharedData      tester1_chanmux_read     (from tester1.chanMux_port_read, to chanMux.tester1_port_read);
-        connection  seL4SharedData      tester1_chanmux_write    (from tester1.chanMux_port_write, to chanMux.tester1_port_write);
-        connection  seL4Notification    tester1_chanmux_hasData  (from chanMux.tester1_event_hasData, to tester1.chanMux_event_hasData);
+        CHANMUX_INSTANCE_CONNECT_INTERFACE(chanMux, tester1)
+        CHANMUX_INSTANCE_CONNECT_CHANNEL(chanMux, tester1, chan)
         connection  seL4RPCCall         tester1_txstream         (from tester1.ChanMuxTestExt, to tester2.ChanMuxTest);
         connection  seL4Notification    tester1Ready4FullDuplex  (from tester1.ready, to tester2.tester1Ready);
 
         // ChanMux_Tester2
         component   ChanMux_Tester2     tester2;
-        connection  seL4RPCCall         tester2_chanmuxRpc       (from tester2.chanMux_rpc, to chanMux.chanMux_rpc);
-        connection  seL4SharedData      tester2_chanmux_read     (from tester2.chanMux_port_read, to chanMux.tester2_port_read);
-        connection  seL4SharedData      tester2_chanmux_write    (from tester2.chanMux_port_write, to chanMux.tester2_port_write);
-        connection  seL4Notification    tester2_chanmux_hasData  (from chanMux.tester2_event_hasData, to tester2.chanMux_event_hasData);
+        CHANMUX_INSTANCE_CONNECT_INTERFACE(chanMux, tester2)
+        CHANMUX_INSTANCE_CONNECT_CHANNEL(chanMux, tester2, chan)
         connection  seL4RPCCall         tester2_txstream         (from tester2.ChanMuxTestExt, to tester1.ChanMuxTest);
         connection  seL4Notification    tester2Ready4FullDuplex  (from tester2.ready, to tester1.tester2Ready);
 
@@ -56,7 +51,7 @@ assembly {
 
         // assign endpoint badges for n:1 RPC interface of ChanMUX. The generic
         // naming scheme is <component>.<interface>_attributes = <badge ID>
-        tester1.chanMux_rpc_attributes = CHANMUX_ID_TESTER_1;
-        tester2.chanMux_rpc_attributes = CHANMUX_ID_TESTER_2;
+        CHANMUX_ASSIGN_CLIENT_BADGE(chanMux, tester1, CHANMUX_ID_TESTER_1)
+        CHANMUX_ASSIGN_CLIENT_BADGE(chanMux, tester2, CHANMUX_ID_TESTER_2)
     }
 }

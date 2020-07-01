@@ -47,15 +47,15 @@ static const ChanMux_ChannelCtx_t channelCtx[] = {
         CHANMUX_CHANNEL_TEST_1,
         &test_channel[0],
         testerFifo[0], // must be the buffer and not a pointer
-        CHANMUX_DATAPORT_DUPLEX_ASSIGN(tester1_port_read, tester1_port_write),
-        tester1_event_hasData_emit),
+        CHANMUX_DATAPORT_ASSIGN(tester1_chan_portRead, tester1_chan_portWrite),
+        tester1_chan_DataAvailable_emit),
 
     CHANMUX_CHANNEL_CTX(
         CHANMUX_CHANNEL_TEST_2,
         &test_channel[1],
         testerFifo[1], // must be the buffer and not a pointer
-        CHANMUX_DATAPORT_DUPLEX_ASSIGN(tester2_port_read, tester2_port_write),
-        tester2_event_hasData_emit),
+        CHANMUX_DATAPORT_ASSIGN(tester2_chan_portRead, tester2_chan_portWrite),
+        tester2_chan_DataAvailable_emit),
 
 };
 
