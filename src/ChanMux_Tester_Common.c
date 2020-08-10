@@ -213,7 +213,7 @@ ChanMuxTest_testOverflow(unsigned int tester)
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
-    Debug_LOG_DEBUG("%s: (tester %u) sending command to trigger overflow condition...",
+    Debug_LOG_DEBUG("%s: (tester %u) sending command to trigger overflow condition",
                     __func__, tester);
     OS_Error_t err = ChanMuxClient_write(&testChanMuxClient,
                                          testCmd,
@@ -228,8 +228,6 @@ ChanMuxTest_testOverflow(unsigned int tester)
                         len);
         goto exit;
     }
-    Debug_LOG_DEBUG("%s: (tester %u) command sent, retrieving data and overflow return code",
-                    __func__, tester);
     len = CHANMUX_TEST_FIFO_SIZE + 1; // we will try to read more then possible
     err = ChanMuxClient_read(&testChanMuxClient,
                              dataBuf,
