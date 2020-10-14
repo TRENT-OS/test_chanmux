@@ -1,5 +1,5 @@
 #
-# ChanMux Test System
+# Test ChanMux server
 #
 # Copyright (C) 2019-2020, Hensoldt Cyber GmbH
 #
