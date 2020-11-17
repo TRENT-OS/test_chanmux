@@ -28,10 +28,6 @@ int run()
     tester1Ready_wait();
     Debug_LOG_DEBUG("%s: (tester 2) signal received!", __func__);
 
-    ChanMuxTest_testReturnCodes(2);
-    ChanMuxTest_testOverflow(2);
-    ChanMuxTest_testMaxSize(2);
-
     ready_emit();
     // now we are ready as the other tester thread. Therefore now we can play
     // the full duplex test in Rx mode for our tester (2) and right after the Tx

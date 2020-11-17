@@ -2,7 +2,10 @@
 #include "LibDebug/Debug.h"
 #include "ChanMuxNvmDriver.h"
 #include "LibUtil/BitConverter.h"
+#include "LibMacros/Test.h"
+
 #include "camkes.h"
+
 #include <string.h>
 #include <stdio.h>
 
@@ -26,7 +29,7 @@ static const ChanMuxClientConfig_t chanMuxClientConfig = {
 static ChanMuxClient testChanMuxClient;
 
 static OS_Error_t
-testMaxSize(unsigned int tester, size_t len)
+testMaxSize(size_t len)
 {
     OS_Error_t retval   = OS_ERROR_GENERIC;
     OS_Error_t err      = OS_ERROR_GENERIC;
@@ -47,31 +50,30 @@ testMaxSize(unsigned int tester, size_t len)
     }
 
     size_t lenWritten = 0;
-    Debug_LOG_DEBUG("%s: (tester %u) sending command sized (%zu), ChanMux MTU is %lu ...",
-                    __func__, tester, len, ChanMuxClient_MTU);
+    Debug_LOG_DEBUG("%s: sending command sized (%zu), ChanMux MTU is %lu ...",
+                    __func__, len, ChanMuxClient_MTU);
     err = ChanMuxClient_write(&testChanMuxClient, dataBuf, len, &lenWritten);
     if (OS_SUCCESS != err)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %u) got error %d when trying to send a request to proxy",
-                        __func__, tester, err);
+        Debug_LOG_ERROR("%s: ChanMuxClient_write() failed, got error %d when trying to send a request to proxy",
+                        __func__, err);
         goto exit;
     }
-    Debug_LOG_DEBUG("%s: (tester %u) %zu sent", __func__, tester, lenWritten);
+    Debug_LOG_DEBUG("%s: %zu sent", __func__, lenWritten);
 
     // expecting to read an uint32, its value is the offset of the
     // first byte that mismatches the pattern
     size_t lenRead = 0;
-    Debug_LOG_DEBUG("%s: (tester %u) attempting to read %zu bytes from ChanMux...",
-                    __func__, tester, sizeof(uint32_t));
+    Debug_LOG_DEBUG("%s: attempting to read %zu bytes from ChanMux...",
+                    __func__, sizeof(uint32_t));
     err = ChanMuxClient_read(&testChanMuxClient,
                              dataBuf,
                              sizeof(uint32_t),
                              &lenRead);
     if (OS_SUCCESS != err)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
+        Debug_LOG_ERROR("%s: ChanMuxClient_read() failed, err was %d with %zu bytes read",
                         __func__,
-                        tester,
                         err,
                         lenRead);
         goto exit;
@@ -82,18 +84,16 @@ testMaxSize(unsigned int tester, size_t len)
         maxPatterLen : patternLen;
     if (numMatches != expextedMatches)
     {
-        Debug_LOG_ERROR("%s: FAIL (tester %u), peer complains of %zu out of %zu matches",
+        Debug_LOG_ERROR("%s: peer complains of %zu out of %zu matches",
                         __func__,
-                        tester,
                         numMatches,
                         expextedMatches);
         goto exit;
     }
     else
     {
-        Debug_LOG_DEBUG("%s: (tester %u) %zu out of %zu match",
+        Debug_LOG_DEBUG("%s: %zu out of %zu match",
                         __func__,
-                        tester,
                         numMatches,
                         expextedMatches);
     }
@@ -117,117 +117,67 @@ ChanMuxTest_init(void)
     return 0;
 }
 
-OS_Error_t
-ChanMuxTest_testReturnCodes(unsigned int tester)
+void
+ChanMuxTest_testReturnCodes()
 {
     static char dataBuf[PAGE_SIZE];
-    OS_Error_t retval = OS_ERROR_GENERIC;
     size_t len = sizeof(dataBuf);
 
-    /* the following code structure may look strange because of the repetition
-     of Debug_LOG_* calls. The reason why we want this is because the macros,
-     based on where they are places will print out __FILE__ and __LINE__ too */
-    // TEST ChanMuxClient_write()
-    if (ChanMuxClient_write(&testChanMuxClient, NULL, len, &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_write(&testChanMuxClient, dataBuf, len, NULL)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_write(&testChanMuxClient,
-                                 dataBuf,
-                                 PAGE_SIZE + 1,
-                                 &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_readAsync(&testChanMuxClient, NULL, len, &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, len, NULL)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_readAsync(&testChanMuxClient,
-                                     dataBuf, PAGE_SIZE + 1,
-                                     &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_read(&testChanMuxClient, NULL, len, &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, len, NULL)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else if (ChanMuxClient_read(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
+    TEST_START();
+
+    TEST_INVAL_PARAM(
+        ChanMuxClient_write(&testChanMuxClient, NULL, len, &len));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_write(&testChanMuxClient, dataBuf, len, NULL));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_write(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_readAsync( &testChanMuxClient, NULL, len, &len));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_readAsync(&testChanMuxClient, dataBuf, len, NULL));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_readAsync(
+            &testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_read(&testChanMuxClient, NULL, len, &len));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_read(&testChanMuxClient, dataBuf, len, NULL));
+    TEST_INVAL_PARAM(
+        ChanMuxClient_read(&testChanMuxClient, dataBuf, PAGE_SIZE + 1, &len));
     // test buffer overlap
-    else if (ChanMuxClient_read(&testChanMuxClient,
-                                OS_Dataport_getBuf(testChanMuxClient.config->port.read),
-                                OS_Dataport_getSize(testChanMuxClient.config->port.read) + 1,
-                                &len)
-            != OS_ERROR_INVALID_PARAMETER)
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u)",
-                        __func__, tester);
-    }
-    else
-    {
-        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
-        retval = OS_SUCCESS;
-    }
-    return retval;
+    TEST_INVAL_PARAM(
+        ChanMuxClient_read(
+            &testChanMuxClient,
+            OS_Dataport_getBuf(testChanMuxClient.config->port.read),
+            OS_Dataport_getSize(testChanMuxClient.config->port.read) + 1,
+            &len));
+
+    TEST_FINISH();
 }
 
-OS_Error_t
-ChanMuxTest_testOverflow(unsigned int tester)
+void
+ChanMuxTest_testOverflow()
 {
+    TEST_START();
+
     static char dataBuf[PAGE_SIZE];
-    OS_Error_t retval = OS_ERROR_GENERIC;
     char testCmd[] = { CMD_TEST_OVERFLOW };
     size_t len = sizeof(testCmd);
 
-    Debug_LOG_DEBUG("%s: (tester %u) sending command to trigger overflow condition",
-                    __func__, tester);
+    Debug_LOG_DEBUG("%s: sending command to trigger overflow condition", __func__);
     OS_Error_t err = ChanMuxClient_write(&testChanMuxClient,
                                          testCmd,
                                          len,
                                          &len);
     if (OS_SUCCESS != err)
     {
-        Debug_LOG_ERROR("%s: (tester %u) failed trying to send a command, err was %d with %zu bytes written",
+        Debug_LOG_ERROR("%s: ChanMuxClient_write() failed trying to send a command, err was %d with %zu bytes written",
                         __func__,
-                        tester,
                         err,
                         len);
-        goto exit;
     }
+    TEST_SUCCESS(err);
+
     len = CHANMUX_TEST_FIFO_SIZE + 1; // we will try to read more then possible
     err = ChanMuxClient_read(&testChanMuxClient,
                              dataBuf,
@@ -240,30 +190,30 @@ ChanMuxTest_testOverflow(unsigned int tester)
                                       dataBuf,
                                       len,
                                       &len);
-        if ((OS_SUCCESS == err))
+        if (OS_SUCCESS != err)
         {
-            Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
-            retval = OS_SUCCESS;
-        }
-        else
-        {
-            Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
+            Debug_LOG_ERROR("%s: ChanMuxClient_readAsync() failed, err was %d with %zu bytes read",
                             __func__,
-                            tester,
                             err,
                             len);
         }
+        TEST_SUCCESS(err);
     }
-    else
-    {
-        Debug_LOG_ERROR("%s: FAIL (tester %u), err was %d with %zu bytes read",
-                        __func__,
-                        tester,
-                        err,
-                        len);
-    }
-exit:
-    return retval;
+    TEST_SUCCESS(err);
+
+    TEST_FINISH();
+}
+
+void
+ChanMuxTest_testMaxSize()
+{
+    TEST_START();
+
+    TEST_SUCCESS(testMaxSize(ChanMuxClient_MTU - 1));
+    TEST_SUCCESS(testMaxSize(ChanMuxClient_MTU));
+    TEST_SUCCESS(testMaxSize(ChanMuxClient_MTU + 1));
+
+    TEST_FINISH();
 }
 
 // This routine will be shared to the other test thread via an interface so that
@@ -376,26 +326,4 @@ ChanMuxTest_testFullDuplex(unsigned int tester)
     }
     Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
     return OS_SUCCESS;
-}
-
-OS_Error_t
-ChanMuxTest_testMaxSize(unsigned int tester)
-{
-    OS_Error_t retval = testMaxSize(tester, ChanMuxClient_MTU - 1);
-
-    if (OS_SUCCESS == retval)
-    {
-        retval = testMaxSize(tester, ChanMuxClient_MTU);
-    }
-
-    if (OS_SUCCESS == retval)
-    {
-        retval = testMaxSize(tester, ChanMuxClient_MTU + 1);
-    }
-
-    if (OS_SUCCESS == retval)
-    {
-        Debug_LOG_INFO("%s: SUCCESS (tester %u)", __func__, tester);
-    }
-    return retval;
 }

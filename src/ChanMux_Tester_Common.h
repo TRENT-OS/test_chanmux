@@ -23,18 +23,26 @@ ChanMuxTest_init(void);
  * @brief Performs tests on parameters and return codes
  */
 OS_Error_t
-ChanMuxTest_testReturnCodes(unsigned int tester);
+ChanMuxTest_testReturnCodes(void);
 
 /**
  * @brief Performs test on overflow condition of ChanMux. A command is sent to
  * the proxy in order to trigger the big shot and then the overflow condition
  * gets tested
- *
- * @param tester an ID that identifies the thread running the function (used
- * in printouts)
 */
 OS_Error_t
-ChanMuxTest_testOverflow(unsigned int tester);
+ChanMuxTest_testOverflow(void);
+
+/**
+ * @brief Performs test of max size (MTU) sending. This sends respectively
+ *  ChanMux MTU - 1 , ChanMux MTU and ChanMux MTU + 1
+ * sized amount of data with a well known pattern. The other side analyze the
+ * pattern and returns the index of the first byte that mismatches the pattern.
+ * This must be consistent with the fact that only an maximum amount MTU size
+ * can be sent, therefore in the +1 case the last byte will be truncated.
+ */
+OS_Error_t
+ChanMuxTest_testMaxSize(void);
 
 /**
  * @brief This fuction will stream data to the Proxy that will, in turn, echo
@@ -62,16 +70,3 @@ ChanMuxTest_testFullDuplexTxStream(unsigned int tester);
 OS_Error_t
 ChanMuxTest_testFullDuplex(unsigned int tester);
 
-/**
- * @brief Performs test of max size (MTU) sending. This sends respectively
- *  ChanMux MTU - 1 , ChanMux MTU and ChanMux MTU + 1
- * sized amount of data with a well known pattern. The other side analyze the
- * pattern and returns the index of the first byte that mismatches the pattern.
- * This must be consistent with the fact that only an maximum amount MTU size
- * can be sent, therefore in the +1 case the last byte will be truncated.
- *
- * @param tester an ID that identifies the thread running the function (used
- * in printouts)
- */
-OS_Error_t
-ChanMuxTest_testMaxSize(unsigned int tester);

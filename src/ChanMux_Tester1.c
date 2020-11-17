@@ -22,9 +22,9 @@ int run()
         return retval;
     }
 
-    ChanMuxTest_testReturnCodes(1);
-    ChanMuxTest_testOverflow(1);
-    ChanMuxTest_testMaxSize(1);
+    ChanMuxTest_testReturnCodes();
+    ChanMuxTest_testOverflow();
+    ChanMuxTest_testMaxSize();
 
     ready_emit();
     Debug_LOG_DEBUG("%s: (tester 1) waiting signal to run...", __func__);
