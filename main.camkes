@@ -9,38 +9,47 @@ import <std_connector.camkes>;
 import "components/ChanMux_Tester1/ChanMux_Tester1.camkes";
 import "components/ChanMux_Tester2/ChanMux_Tester2.camkes";
 
-#include "system_config.h"
-
-#include "ChanMux/ChanMux.camkes"
-ChanMux_DEFINE_COMPONENT(ChanMux,
-                         tester1, chan,
-                         tester2, chan)
+#include "ChanMux/ChanMux_UART.camkes"
+ChanMux_COMPONENT_DEFINE(
+    ChanMux_UART,
+    tester1, chan,
+    tester2, chan
+)
 
 assembly {
     composition {
+        component ChanMux_UART chanMux_UART;
+        component UART_CHANMUX uart;
 
-        // ChanMux + UART
-        ChanMux_DECLARE_AND_CONNECT_INSTANCE_TO_UART(ChanMux, chanMux)
+        ChanMux_UART_INSTANCE_CONNECT(
+            chanMux_UART,
+            uart
+        )
 
         // ChanMux_Tester1
         component   ChanMux_Tester1     tester1;
-        ChanMux_INSTANCE_CONNECT_INTERFACE(chanMux, tester1)
-        ChanMux_INSTANCE_CONNECT_CHANNEL(chanMux, tester1, chan)
+
+        ChanMux_INSTANCE_CONNECT_CLIENTS(
+            chanMux_UART,
+            tester1, chan
+        )
         connection  seL4RPCCall         tester1_txstream         (from tester1.ChanMuxTestExt, to tester2.ChanMuxTest);
         connection  seL4Notification    tester1Ready4FullDuplex  (from tester1.ready, to tester2.tester1Ready);
 
         // ChanMux_Tester2
         component   ChanMux_Tester2     tester2;
-        ChanMux_INSTANCE_CONNECT_INTERFACE(chanMux, tester2)
-        ChanMux_INSTANCE_CONNECT_CHANNEL(chanMux, tester2, chan)
+
+        ChanMux_INSTANCE_CONNECT_CLIENTS(
+            chanMux_UART,
+            tester2, chan
+        )
         connection  seL4RPCCall         tester2_txstream         (from tester2.ChanMuxTestExt, to tester1.ChanMuxTest);
         connection  seL4Notification    tester2Ready4FullDuplex  (from tester2.ready, to tester1.tester2Ready);
-
     }
     configuration {
-        // assign endpoint badges for n:1 RPC interface of ChanMUX. The generic
-        // naming scheme is <component>.<interface>_attributes = <badge ID>
-        ChanMux_ASSIGN_CLIENT_BADGE(chanMux, tester1, CHANMUX_ID_TESTER_1)
-        ChanMux_ASSIGN_CLIENT_BADGE(chanMux, tester2, CHANMUX_ID_TESTER_2)
+        ChanMux_UART_CLIENT_ASSIGN_BADGES(
+            tester1.chanMux_Rpc,
+            tester2.chanMux_Rpc
+        )
     }
 }

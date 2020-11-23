@@ -1,7 +1,7 @@
 import <if_ChanMux.camkes>;
 import "../../interfaces/ChanMuxTestInf.camkes";
 
-#include "ChanMux/ChanMuxHelper.camkes"
+#include "ChanMux/ChanMux.camkes"
 
 component ChanMux_Tester1 {
     control;
