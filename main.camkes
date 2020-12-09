@@ -29,7 +29,7 @@ assembly {
         // ChanMux_Tester1
         component   ChanMux_Tester1     tester1;
 
-        ChanMux_INSTANCE_CONNECT_CLIENTS(
+        ChanMux_INSTANCE_CONNECT_CLIENT(
             chanMux_UART,
             tester1, chan
         )
@@ -39,7 +39,7 @@ assembly {
         // ChanMux_Tester2
         component   ChanMux_Tester2     tester2;
 
-        ChanMux_INSTANCE_CONNECT_CLIENTS(
+        ChanMux_INSTANCE_CONNECT_CLIENT(
             chanMux_UART,
             tester2, chan
         )
