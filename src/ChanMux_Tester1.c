@@ -4,7 +4,7 @@
  *  Copyright (C) 2019-2020, Hensoldt Cyber GmbH
  */
 
-#include "LibDebug/Debug.h"
+#include "lib_debug/Debug.h"
 #include "OS_Error.h"
 #include "ChanMux_Tester_Common.h"
 #include "camkes.h"
