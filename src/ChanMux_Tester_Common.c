@@ -1,6 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "LibDebug/Debug.h"
-#include "ChanMuxNvmDriver.h"
+#include "ChanMux/ChanMuxClient.h"
 #include "LibUtil/BitConverter.h"
 #include "LibMacros/Test.h"
 
