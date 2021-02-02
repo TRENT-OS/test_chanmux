@@ -1,7 +1,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "lib_debug/Debug.h"
 #include "ChanMux/ChanMuxClient.h"
-#include "lib_util/BitConverter.h"
+#include "lib_utils/BitConverter.h"
 #include "lib_macros/Test.h"
 
 #include "camkes.h"

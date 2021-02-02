@@ -27,7 +27,7 @@ DeclareCAmkESComponent(
         os_core_api
         lib_debug
         lib_macros
-        lib_util
+        lib_utils
         chanmux_client
 )
 
@@ -43,7 +43,7 @@ DeclareCAmkESComponent(
         os_core_api
         lib_debug
         lib_macros
-        lib_util
+        lib_utils
         chanmux_client
 )
 
