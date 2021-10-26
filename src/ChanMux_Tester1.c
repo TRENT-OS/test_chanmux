@@ -1,7 +1,7 @@
 /*
  *  Channel Tester 1
  *
- *  Copyright (C) 2019-2020, Hensoldt Cyber GmbH
+ *  Copyright (C) 2019-2020, HENSOLDT Cyber GmbH
  */
 
 #include "lib_debug/Debug.h"

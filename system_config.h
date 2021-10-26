@@ -2,7 +2,7 @@
  *
  * ChanMux Test Configuration
  *
- * Copyright (C) 2019, Hensoldt Cyber GmbH
+ * Copyright (C) 2019, HENSOLDT Cyber GmbH
  *
  */
 #pragma once

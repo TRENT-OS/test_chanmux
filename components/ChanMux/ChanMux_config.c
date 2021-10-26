@@ -1,7 +1,7 @@
 /*
  *  Channel MUX
  *
- *  Copyright (C) 2019, Hensoldt Cyber GmbH
+ *  Copyright (C) 2019, HENSOLDT Cyber GmbH
  */
 
 #include "system_config.h"

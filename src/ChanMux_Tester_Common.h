@@ -1,7 +1,7 @@
 /*
  *  Common functions used for initializing and using the ChanMuxTest
  *
- *  Copyright (C) 2019, Hensoldt Cyber GmbH
+ *  Copyright (C) 2019, HENSOLDT Cyber GmbH
  */
 
 #pragma once
