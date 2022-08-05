@@ -51,5 +51,10 @@ assembly {
             tester1.chanMux_Rpc,
             tester2.chanMux_Rpc
         )
+        sysctrl.priority      = 254;
+        uart.priority         = 253;
+        chanMux_UART.priority = 252;
+        tester1.priority      = 100;
+        tester2.priority      = 100;
     }
 }
