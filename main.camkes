@@ -16,10 +16,20 @@ ChanMux_COMPONENT_DEFINE(
     tester2, chan
 )
 
+#ifdef SYSCTRL_EXISTS
+#include "SystemController/SystemController.camkes"
+#endif
+
 assembly {
     composition {
         component ChanMux_UART chanMux_UART;
         component UART_CHANMUX uart;
+
+        // TODO: make dependent from individual platform, as not every board (e.g. QEMU) requires clock initialization
+#ifdef SYSCTRL_EXISTS
+        component SystemController sysctrl;
+        connection seL4RPCCall con_sysctrl(from uart.sysctrl_uart_client, to sysctrl.sysctrl_uart);
+#endif
 
         ChanMux_UART_INSTANCE_CONNECT(
             chanMux_UART,
@@ -51,6 +61,10 @@ assembly {
             tester1.chanMux_Rpc,
             tester2.chanMux_Rpc
         )
+#ifdef SYSCTRL_EXISTS
+       sysctrl.priority     = 254;
+       sysctrl.sysctrl_bpmp_attributes = 101;
+#endif
         uart.priority         = 252;
         chanMux_UART.priority = 253;
         tester1.priority      = 100;
